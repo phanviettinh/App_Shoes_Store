@@ -6,6 +6,7 @@ import 'package:sports_shoe_store/common/widgets/custom_shapes/containers/rounde
 import 'package:sports_shoe_store/common/widgets/icon/circular_icon.dart';
 import 'package:sports_shoe_store/common/widgets/images/rounded_image.dart';
 import 'package:sports_shoe_store/common/widgets/product/favourite_icon/favourite_icon.dart';
+import 'package:sports_shoe_store/common/widgets/product/product_carts/product_cart_add_button.dart';
 import 'package:sports_shoe_store/common/widgets/text/brand_title_text_with_verified_icon.dart';
 import 'package:sports_shoe_store/common/widgets/text/product_title.dart';
 import 'package:sports_shoe_store/features/shop/controllers/product/product_controller.dart';
@@ -125,21 +126,7 @@ class TProductCartVertical extends StatelessWidget {
                    ],
                  )),
                 ///add to cart
-                Container(
-                  decoration: const BoxDecoration(
-                      color: TColors.dark,
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(TSizes.cardRadiusMd),
-                          bottomRight: Radius.circular(TSizes.productImageRadius)
-                      )
-                  ),
-                  ///button add
-                  child: const SizedBox(
-                    width: TSizes.iconLg  * 1.2,
-                    height: TSizes.iconLg * 1.2,
-                    child: Center(child: Icon(Iconsax.add,color: TColors.white,),),
-                  ),
-                )
+                ProductCartAddToCartButton(product: product)
               ],
             )
           ],
@@ -148,5 +135,6 @@ class TProductCartVertical extends StatelessWidget {
     );
   }
 }
+
 
 

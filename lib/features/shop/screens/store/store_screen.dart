@@ -33,7 +33,7 @@ class StoreScreen extends StatelessWidget {
           appBar: TAppbar(
             title:  Text('Store',style: TextStyle(fontSize: 20,color: dark ? TColors.white :  TColors.dark),),
             actions: [
-              TCartCounterIcon(onPressed: (){}, iconColor: dark ?  TColors.white : TColors.dark)
+              TCartCounterIcon( iconColor: dark ?  TColors.white : TColors.dark)
             ],
           ),
           body: NestedScrollView(
