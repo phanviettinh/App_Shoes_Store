@@ -112,7 +112,7 @@ class UserController extends GetxController {
 
       ///first re-auth user
       final auth = AuthenticationRepository.instance;
-      final provider = auth.authUser!
+      final provider = auth.authUser
           .providerData
           .map((e) => e.providerId)
           .first;

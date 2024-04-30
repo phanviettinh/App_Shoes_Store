@@ -1,35 +1,47 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:sports_shoe_store/common/widgets/text/section_heading.dart';
+import 'package:sports_shoe_store/features/personalization/controllers/address_controller.dart';
 import 'package:sports_shoe_store/utils/constants/sizes.dart';
 
 class TBillingAddressSection extends StatelessWidget {
   const TBillingAddressSection({super.key});
 
+
   @override
   Widget build(BuildContext context) {
-    return Column(
+    final addressController = AddressController.instance;
+
+    return Obx(() => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        TSectionHeading(title: 'Shipping Address',buttonTitle: 'Change',onPressed: (){},),
-        Text('Phan Tinh',style: Theme.of(context).textTheme.bodyLarge,),
-        const SizedBox(height: TSizes.spaceBtwItems / 2,),
-         Row(
+        TSectionHeading(title: 'Shipping Address',buttonTitle: 'Change',onPressed: () => addressController.selectNewAddressPopup(context),),
+        addressController.selectedAddress.value.id.isNotEmpty ?
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Icon(Icons.phone,color: Colors.grey,size: 16,),
-            const SizedBox(width: TSizes.spaceBtwItems,),
-            Text('0365192043',style: Theme.of(context).textTheme.bodyMedium,)
+            Text(addressController.selectedAddress.value.name,style: Theme.of(context).textTheme.bodyLarge,),
+            const SizedBox(height: TSizes.spaceBtwItems / 2,),
+            Row(
+              children: [
+                const Icon(Icons.phone,color: Colors.grey,size: 16,),
+                const SizedBox(width: TSizes.spaceBtwItems,),
+                Text(addressController.selectedAddress.value.phoneNumber,style: Theme.of(context).textTheme.bodyMedium,)
+              ],
+            ),
+            const SizedBox(height: TSizes.spaceBtwItems / 2,),
+            Row(
+              children: [
+                const Icon(Icons.location_history,color: Colors.grey,size: 16,),
+                const SizedBox(width: TSizes.spaceBtwItems,),
+                Expanded(child: Text(addressController.selectedAddress.value.toString().toString(),style: Theme.of(context).textTheme.bodyMedium,softWrap: true,))
+              ],
+            ),
+            // const SizedBox(height: TSizes.spaceBtwItems / 2,),
           ],
-        ),
-        const SizedBox(height: TSizes.spaceBtwItems / 2,),
-        Row(
-          children: [
-            const Icon(Icons.location_history,color: Colors.grey,size: 16,),
-            const SizedBox(width: TSizes.spaceBtwItems,),
-            Expanded(child: Text('29, nghach 32/80, Do Duc Duc, Me Tri, Ha Noi',style: Theme.of(context).textTheme.bodyMedium,softWrap: true,))
-          ],
-        ),
-        const SizedBox(height: TSizes.spaceBtwItems / 2,),
+        ) : Text('Select Address', style: Theme.of(context).textTheme.bodyMedium,),
+
       ],
-    );
+    ));
   }
 }
