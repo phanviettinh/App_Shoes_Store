@@ -3,7 +3,10 @@ import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:sports_shoe_store/common/widgets/custom_shapes/containers/rounded_container.dart';
 import 'package:sports_shoe_store/common/widgets/loaders/animation_loader.dart';
+import 'package:sports_shoe_store/data/repositories/orders/orders_repository.dart';
 import 'package:sports_shoe_store/features/shop/controllers/product/order_controller.dart';
+import 'package:sports_shoe_store/features/shop/screens/order/order.dart';
+import 'package:sports_shoe_store/features/shop/screens/order/order_detail.dart';
 import 'package:sports_shoe_store/navigation_menu.dart';
 import 'package:sports_shoe_store/utils/constants/colors.dart';
 import 'package:sports_shoe_store/utils/constants/image_strings.dart';
@@ -59,13 +62,14 @@ class TOrderListItem extends StatelessWidget {
                         Expanded(child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(order.orderStatusText,style: Theme.of(context).textTheme.bodyLarge!.apply(color: TColors.primaryColor,fontWeightDelta: 1),),
+                            Text(order.orderStatusText,style: Theme.of(context).textTheme.bodyLarge!.apply(color: order.orderStatusText == 'Processing' ? TColors.primaryColor : Colors.red,fontWeightDelta: 1),),
                              Text(order.formattedOrderDate,style: const TextStyle(fontSize: 16,fontWeight: FontWeight.bold),)
                           ],
                         ),),
 
                         ///icon
-                        IconButton(onPressed: (){}, icon: const Icon(Iconsax.arrow_right_34,size: TSizes.iconSm,))
+                        IconButton(onPressed: () => Get.to(() =>  OrderDetail(order: order)),
+                            icon: const Icon(Iconsax.arrow_right_34,size: TSizes.iconSm,))
                       ],
                     ),
                     const SizedBox(height: TSizes.spaceBtwItems,),

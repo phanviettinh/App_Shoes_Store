@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:sports_shoe_store/common/widgets/loaders/loader.dart';
 import 'package:sports_shoe_store/features/shop/controllers/product/variation_controller.dart';
 import 'package:sports_shoe_store/features/shop/models/cart_item_model.dart';
+import 'package:sports_shoe_store/features/shop/models/order_model.dart';
 import 'package:sports_shoe_store/features/shop/models/product_model.dart';
 import 'package:sports_shoe_store/utils/constants/enums.dart';
 import 'package:sports_shoe_store/utils/local_storage/local_utility.dart';
@@ -211,4 +212,7 @@ class CartController extends GetxController {
     cartItems.clear();
     updateCart();
   }
+
+
+
 }
