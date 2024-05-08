@@ -74,7 +74,7 @@ class AddressController extends GetxController{
   Future addNewAddresses() async{
     try{
     //start loading
-      TFullScreenLoader.openLoadingDialog('Storing Address...', TImages.climbing);
+      TFullScreenLoader.openLoadingDialog('Storing Address...', TImages.loading);
 
       //check internet connectivity
       final isConnected = await NetworkManager.instance.isConnected();

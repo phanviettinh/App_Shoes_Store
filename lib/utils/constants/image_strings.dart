@@ -32,7 +32,9 @@ class TImages {
 
   ///json
   static const String checkerSuccess = "assets/images/animations/Animation - 1711706443617.json";
-
+  static const String emptyCart = "assets/images/animations/Animation - 1715183492617.json";
+  static const String wishlist = "assets/images/animations/Animation - 1715184242613.json";
+  static const String loading = "assets/images/animations/Animation - 1715184622450.json";
 
   ///product
 

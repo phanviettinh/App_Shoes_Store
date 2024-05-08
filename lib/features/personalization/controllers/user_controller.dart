@@ -108,7 +108,7 @@ class UserController extends GetxController {
   ///delete user account
   void deleteUserAccount() async {
     try {
-      TFullScreenLoader.openLoadingDialog('Processing...', TImages.verifyEmail);
+      TFullScreenLoader.openLoadingDialog('Processing...', TImages.loading);
 
       ///first re-auth user
       final auth = AuthenticationRepository.instance;
@@ -140,7 +140,7 @@ class UserController extends GetxController {
   ///re-auth before deleting
   Future<void> reAuthenticateEmailAndPasswordUser() async {
     try {
-      TFullScreenLoader.openLoadingDialog('Processing...', TImages.verifyEmail);
+      TFullScreenLoader.openLoadingDialog('Processing...', TImages.loading);
 
       //check Internet connect
       final isConnected = await NetworkManager.instance.isConnected();

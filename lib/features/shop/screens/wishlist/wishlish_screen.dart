@@ -44,7 +44,7 @@ class WishList extends StatelessWidget {
                   text: 'WishList is Empty...',
                   showAction: true,
                   actionText: 'Let\'s add some',
-                  animation: TImages.adidasRm3,
+                  animation: TImages.wishlist,
                   onActionPressed: () => Get.off(() => const NavigationMenu()),
                 );
 

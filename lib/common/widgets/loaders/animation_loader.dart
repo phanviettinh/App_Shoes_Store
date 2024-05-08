@@ -24,13 +24,7 @@ class TAnimationLoaderWidget extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Lottie.network(
-            'https://assets1.lottiefiles.com/private_files/lf30_QLsD8M.json',
-            height: 200.0,
-            repeat: true,
-            reverse: true,
-            animate: true,
-          ), //display lottie animation
+          Lottie.asset(animation,width: MediaQuery.of(context).size.width * 0.6),
           const SizedBox(height: TSizes.defaultSpace,),
 
           Text(

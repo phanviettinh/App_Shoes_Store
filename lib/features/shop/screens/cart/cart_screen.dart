@@ -39,7 +39,7 @@ class CartScreen extends StatelessWidget {
         ///nothing found widget
         final emptyWidget = TAnimationLoaderWidget(
           text: 'Cart is Empty.',
-          animation: TImages.adidasRm3,
+          animation: TImages.emptyCart,
           showAction: true,
           actionText: 'Let\'s fill it',
           onActionPressed: () => Get.off(() => const NavigationMenu()),
@@ -48,14 +48,12 @@ class CartScreen extends StatelessWidget {
         if (controller.cartItems.isEmpty) {
           return emptyWidget;
         } else {
-          return const SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.all(TSizes.defaultSpace),
+          return const Padding(
+            padding: EdgeInsets.all(TSizes.defaultSpace),
 
-              ///item in cart
-              child: TCartItems(
-                showAddRemoveButtons: true,
-              ),
+            ///item in cart
+            child: TCartItems(
+              showAddRemoveButtons: true,
             ),
           );
         }

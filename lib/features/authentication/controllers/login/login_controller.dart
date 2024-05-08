@@ -39,7 +39,7 @@ class LoginController extends GetxController{
   Future<void> emailAndPasswordSignIn() async {
     try{
       //start loading
-      TFullScreenLoader.openLoadingDialog('Logging you in ....', TImages.checkerSuccess);
+      TFullScreenLoader.openLoadingDialog('Logging you in ....', TImages.loading);
 
       //check Internet connect
       final isConnected = await NetworkManager.instance.isConnected();
@@ -77,7 +77,7 @@ class LoginController extends GetxController{
   Future<void> googleSignIn() async {
     try{
       //start loading
-      TFullScreenLoader.openLoadingDialog('Logging with google...', TImages.checkerSuccess);
+      TFullScreenLoader.openLoadingDialog('Logging with google...', TImages.loading);
 
       //check Internet connect
       final isConnected = await NetworkManager.instance.isConnected();

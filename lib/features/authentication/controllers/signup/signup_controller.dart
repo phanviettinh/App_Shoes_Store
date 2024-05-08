@@ -36,7 +36,7 @@ class SignupController extends GetxController {
       // Hiển thị loading dialog sau khi đã chắc chắn các trường nhập liệu hợp lệ
       TFullScreenLoader.openLoadingDialog(
           'We are processing your information...',
-          TImages.adidasIcon
+          TImages.loading
       );
 
       // Kiểm tra kết nối internet
