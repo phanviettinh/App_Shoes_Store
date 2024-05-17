@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:sports_shoe_store/admin/login/login_admin_screen.dart';
 import 'package:sports_shoe_store/features/authentication/controllers/forget_password/forget_passwrod_controller.dart';
 import 'package:sports_shoe_store/features/authentication/screens/login/login.dart';
 import 'package:sports_shoe_store/utils/constants/colors.dart';
@@ -9,10 +10,9 @@ import 'package:sports_shoe_store/utils/constants/text_strings.dart';
 import 'package:sports_shoe_store/utils/helpers/helper_funtions.dart';
 import 'package:sports_shoe_store/utils/validators/validation.dart';
 
-import 'reset_password.dart';
 
-class ForgetPassword extends StatelessWidget {
-  const ForgetPassword({super.key});
+class ForgetPasswordAdmin extends StatelessWidget {
+  const ForgetPasswordAdmin({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class ForgetPassword extends StatelessWidget {
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Iconsax.arrow_left,color: THelperFunctions.isDarkMode(context) ? TColors.white : TColors.dark,),
-          onPressed: () => Get.offAll(() => const LoginScreen()),
+          onPressed: () => Get.offAll(() => const LoginAdminScreen()),
         ),
       ),      body: Padding(
         padding: const EdgeInsets.all(TSizes.defaultSpace),

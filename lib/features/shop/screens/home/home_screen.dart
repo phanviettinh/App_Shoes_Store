@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sports_shoe_store/common/widgets/custom_shapes/containers/primary_header_container.dart';
@@ -13,7 +12,6 @@ import 'package:sports_shoe_store/features/shop/screens/all_product/all_product.
 import 'package:sports_shoe_store/features/shop/screens/home/widgets/home_appbar.dart';
 import 'package:sports_shoe_store/features/shop/screens/home/widgets/home_category.dart';
 import 'package:sports_shoe_store/features/shop/screens/home/widgets/home_slider.dart';
-import 'package:sports_shoe_store/utils/constants/image_strings.dart';
 import 'package:sports_shoe_store/utils/constants/sizes.dart';
 
 class HomeScreen extends StatelessWidget {

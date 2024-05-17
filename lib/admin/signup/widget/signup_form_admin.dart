@@ -3,14 +3,14 @@ import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:sports_shoe_store/features/authentication/controllers/signup/signup_controller.dart';
 import 'package:sports_shoe_store/features/authentication/screens/signup/verify_email.dart';
+import 'package:sports_shoe_store/features/authentication/screens/signup/widgets/team_of_the_conditions.dart';
 import 'package:sports_shoe_store/utils/constants/sizes.dart';
 import 'package:sports_shoe_store/utils/constants/text_strings.dart';
 import 'package:sports_shoe_store/utils/validators/validation.dart';
 
-import 'team_of_the_conditions.dart';
 
-class TSignupForm extends StatelessWidget {
-  const TSignupForm({
+class TSignupFormAdmin extends StatelessWidget {
+  const TSignupFormAdmin({
     super.key,
   });
 
@@ -138,7 +138,7 @@ class TSignupForm extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () => controller.signup(),
+                onPressed: () => controller.signupAdmin(),
                 child: const Text(TTexts.createAccount),
               ),
             )

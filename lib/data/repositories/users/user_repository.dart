@@ -33,6 +33,7 @@ class UserRepository extends GetxController{
     }
   }
 
+
   ///Function to fetch user details based on user ID.
   Future<UserModel> fetchUserDetail() async{
     try{

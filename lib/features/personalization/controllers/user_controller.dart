@@ -46,7 +46,7 @@ class UserController extends GetxController {
   }
 
 
-  ///save user record from any registration provider
+  ///save user record from any registration provider client
   Future<void> saveUserRecord(UserCredential? userCredentials) async {
     try {
       //refresh user record
@@ -70,7 +70,45 @@ class UserController extends GetxController {
                   ? nameParts.sublist(1).join(' ')
                   : '',
               phoneNumber: userCredentials.user!.phoneNumber ?? '',
-              profilePicture: userCredentials.user!.photoURL ?? ''
+              profilePicture: userCredentials.user!.photoURL ?? '', role: 'Client'
+          );
+
+          //save user data
+          await userRepository.saveUserRecord(user);
+        }
+      }
+    } catch (e) {
+      TLoaders.warningSnackBar(
+          title: 'Data not saved',
+          message: 'Something went wrong while save your information. You can re-save your data in your Profile');
+    }
+  }
+
+  ///save user record from any registration provider admin
+  Future<void> saveUserRecordAdmin(UserCredential? userCredentials) async {
+    try {
+      //refresh user record
+      await fetchUserRecord();
+
+      //if no record already stored
+      if(user.value.id.isEmpty) {
+        if (userCredentials != null) {
+          final nameParts = UserModel.nameParts(
+              userCredentials.user!.displayName ?? '');
+          final userName = UserModel.generateUsername(
+              userCredentials.user!.displayName ?? '');
+
+          //map data
+          final user = UserModel(
+              id: userCredentials.user!.uid,
+              email: userCredentials.user!.email ?? '',
+              firstName: nameParts[0],
+              username: userName,
+              lastName: nameParts.length > 1
+                  ? nameParts.sublist(1).join(' ')
+                  : '',
+              phoneNumber: userCredentials.user!.phoneNumber ?? '',
+              profilePicture: userCredentials.user!.photoURL ?? '', role: 'Admin'
           );
 
           //save user data

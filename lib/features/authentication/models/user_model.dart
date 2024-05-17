@@ -9,6 +9,7 @@ class UserModel {
   final String email;
   String phoneNumber;
   String profilePicture;
+  String role;
 
   UserModel(
       {required this.id,
@@ -17,7 +18,9 @@ class UserModel {
         required this.username,
         required this.lastName,
         required this.phoneNumber,
-        required this.profilePicture});
+        required this.profilePicture,
+        required this.role
+      });
 
   String get fullName => '$firstName $lastName';
 
@@ -29,7 +32,7 @@ class UserModel {
     String lastName = nameParts.length > 1 ? nameParts[1].toUpperCase() : "";
 
     String camelCaseUsername = "$firstName$lastName";
-    String usernameWithPrefix = 'cwt_$camelCaseUsername';
+    String usernameWithPrefix = camelCaseUsername;
     return usernameWithPrefix;
   }
 
@@ -40,7 +43,7 @@ class UserModel {
       username: '',
       lastName: '',
       phoneNumber: '',
-      profilePicture: '');
+      profilePicture: '', role: '');
 
   /// Convert model to JSON structure for storing data in Firebase
   Map<String, dynamic> toJson() {
@@ -50,12 +53,11 @@ class UserModel {
       'Username': username,
       'Email': email,
       'PhoneNumber': phoneNumber,
-      'ProfilePicture': profilePicture,
+      'ProfilePicture': profilePicture, 'Role': role
     };
   }
 
-  factory UserModel.fromSnapshot(
-      DocumentSnapshot<Map<String, dynamic>> document) {
+  factory UserModel.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> document) {
     if (document.data() != null) {
       final data = document.data()!;
       return UserModel(
@@ -65,7 +67,7 @@ class UserModel {
         username: data['Username'] ?? '',
         email: data['Email'] ?? '',
         phoneNumber: data['PhoneNumber'] ?? '',
-        profilePicture: data['ProfilePicture'] ?? '',
+        profilePicture: data['ProfilePicture'] ?? '', role: data['Role'],
       );
     }else {
       return UserModel.empty();

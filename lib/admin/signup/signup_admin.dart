@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:sports_shoe_store/admin/signup/widget/signup_form_admin.dart';
 import 'package:sports_shoe_store/common/widgets/login_signup/form_divider.dart';
 import 'package:sports_shoe_store/common/widgets/login_signup/social_button.dart';
+import 'package:sports_shoe_store/features/authentication/screens/signup/widgets/signup_form.dart';
 import 'package:sports_shoe_store/utils/constants/colors.dart';
 import 'package:sports_shoe_store/utils/constants/sizes.dart';
 import 'package:sports_shoe_store/utils/constants/text_strings.dart';
 import 'package:sports_shoe_store/utils/helpers/helper_funtions.dart';
 
-import 'widgets/signup_form.dart';
 
-class SignupScreen extends StatelessWidget {
-  const SignupScreen({super.key});
+class SignupScreenAdmin extends StatelessWidget {
+  const SignupScreenAdmin({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +36,7 @@ class SignupScreen extends StatelessWidget {
               const SizedBox(height: TSizes.spaceBtwSections,),
 
               ///form Signup
-              const TSignupForm(),
+              const TSignupFormAdmin(),
 
             ],
           ),

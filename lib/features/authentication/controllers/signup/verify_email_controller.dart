@@ -48,6 +48,7 @@ class VerifyEmailController extends GetxController {
     });
   }
 
+
   ///Manually check if email verify
   checkEmailVerificationStatus(){
     final currentUser = FirebaseAuth.instance.currentUser;
@@ -59,5 +60,6 @@ class VerifyEmailController extends GetxController {
           onPressed: () => AuthenticationRepository.instance.screenRedirect()));
     }
   }
+
 
 }
