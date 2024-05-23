@@ -231,4 +231,6 @@ class UserController extends GetxController {
       imageUploading.value = false;
     }
   }
+
+
 }

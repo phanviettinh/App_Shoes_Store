@@ -12,7 +12,8 @@ class OrderRepository extends GetxController{
   final _db = FirebaseFirestore.instance;
 
 
-  ///get all order related to current user
+
+  ///get order related to current user
   Future<List<OrderModel>> fetchUserOrders() async{
     try{
       final userId = AuthenticationRepository.instance.authUser.uid;
@@ -25,10 +26,31 @@ class OrderRepository extends GetxController{
     }
   }
 
-  //save and update orders
-  Future<String> saveOrUpdateOrder(OrderModel order, String userId) async {
+  // New method to fetch all orders for admin
+  Future<List<OrderModel>> fetchAllOrders() async {
+
+      // Lấy dữ liệu trực tiếp từ server
+      final result = await _db.collectionGroup('Orders').get();
+      return result.docs.map((e) => OrderModel.fromSnapshot(e)).toList();
+
+  }
+  Future<List<OrderModel>> fetchUserOrdersAdmin(String userId) async {
     try {
-      final orderRef = _db.collection('Users').doc(userId).collection('Orders');
+      if (userId.isEmpty) throw 'Unable to find user information. Try again in a few minutes.';
+
+      final result = await _db.collection('Users').doc(userId).collection('Orders').get();
+      return result.docs.map((e) => OrderModel.fromSnapshot(e)).toList();
+    } catch (e) {
+      throw 'Something went wrong while fetching order information. Try again later';
+    }
+  }
+
+
+
+  //save and update orders
+  Future<String> saveOrUpdateOrder(OrderModel order, String clientUserId) async {
+    try {
+      final orderRef = _db.collection('Users').doc(clientUserId).collection('Orders');
 
       // Kiểm tra xem đơn hàng đã tồn tại hay chưa
       final querySnapshot = await orderRef.where('id', isEqualTo: order.id).get();
@@ -47,32 +69,32 @@ class OrderRepository extends GetxController{
     }
   }
 
+// Hàm lấy các đơn hàng có trạng thái "Received"
+  Future<List<OrderModel>> fetchReceivedOrders() async {
+    try {
+      // Lấy tất cả các tài liệu người dùng
+      final usersSnapshot = await _db.collection('Users').get();
 
-// // Thêm hàm saveOrder để trả về ID của đơn hàng đã được lưu trữ
-//   Future<String> saveOrder(OrderModel order, String userId) async {
-//     try {
-//       final docRef = await _db.collection('Users').doc(userId).collection('Orders').add(order.toJson());
-//       return docRef.id; // Trả về ID của tài liệu đã được lưu trữ
-//     } catch (e) {
-//       throw 'Something went wrong while fetching order information. Try again later';
-//     }
-//   }
+      List<OrderModel> receivedOrders = [];
 
-// // Cập nhật đơn hàng sử dụng ID đã cho
-//   Future<void> updateOrder(OrderModel order, String userId, String orderId) async {
-//     try {
-//       // Kiểm tra tính hợp lệ của mã đơn hàng trước khi cập nhật
-//       await _db.collection('Orders').doc(userId).collection('Orders').doc(orderId).update(order.toJson());
-//
-//     } catch (e) {
-//       throw 'Failed to update order: $e';
-//     }
-//   }
+      // Lặp qua từng tài liệu người dùng để tìm đơn hàng có trạng thái "Received"
+      for (var userDoc in usersSnapshot.docs) {
+        final ordersSnapshot = await _db
+            .collection('Users')
+            .doc(userDoc.id)
+            .collection('Orders')
+            .where('status', isEqualTo: 'OrderStatus.received')
+            .get();
 
+        // Thêm các đơn hàng có trạng thái "Received" vào danh sách
+        receivedOrders.addAll(ordersSnapshot.docs.map((e) => OrderModel.fromSnapshot(e)).toList());
+      }
 
-
-
-
-
+      return receivedOrders;
+    } catch (e) {
+      print('Error fetching received orders: $e'); // In lỗi chi tiết
+      throw 'Something went wrong while fetching received orders. Try again later';
+    }
+  }
 
 }

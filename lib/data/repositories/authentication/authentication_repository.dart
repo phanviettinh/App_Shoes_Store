@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sports_shoe_store/admin/login/login_admin_screen.dart';
-import 'package:sports_shoe_store/admin/screen/home_admin.dart';
+import 'package:sports_shoe_store/admin/screen/home/home_admin.dart';
 import 'package:sports_shoe_store/data/repositories/users/user_repository.dart';
 import 'package:sports_shoe_store/features/authentication/screens/login/login.dart';
 import 'package:sports_shoe_store/features/authentication/screens/onboarding/onboarding.dart';

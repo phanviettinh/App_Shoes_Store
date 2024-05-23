@@ -1,29 +1,23 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sports_shoe_store/common/widgets/appbar/appbar.dart';
-import 'package:sports_shoe_store/common/widgets/loaders/loader.dart';
-import 'package:sports_shoe_store/common/widgets/succes_screen/succes_screen.dart';
-import 'package:sports_shoe_store/data/repositories/authentication/authentication_repository.dart';
-import 'package:sports_shoe_store/data/repositories/orders/orders_repository.dart';
-import 'package:sports_shoe_store/features/personalization/models/address_model.dart';
-import 'package:sports_shoe_store/features/personalization/screens/settings/setting_screen.dart';
+import 'package:sports_shoe_store/data/repositories/users/user_repository.dart';
+import 'package:sports_shoe_store/features/authentication/models/user_model.dart';
 import 'package:sports_shoe_store/features/shop/controllers/product/cart_controller.dart';
 import 'package:sports_shoe_store/features/shop/controllers/product/order_controller.dart';
-import 'package:sports_shoe_store/features/shop/models/order_model.dart';
-import 'package:sports_shoe_store/features/shop/screens/order/widgets/order_list.dart';
-import 'package:sports_shoe_store/navigation_menu.dart';
 import 'package:sports_shoe_store/utils/constants/colors.dart';
-import 'package:sports_shoe_store/utils/constants/enums.dart';
-import 'package:sports_shoe_store/utils/constants/image_strings.dart';
 import 'package:sports_shoe_store/utils/constants/sizes.dart';
 import 'package:sports_shoe_store/utils/helpers/helper_funtions.dart';
 import 'package:sports_shoe_store/utils/helpers/pricing_caculator.dart';
 
-class OrderDetail extends StatelessWidget {
-  const OrderDetail({Key? key, required this.order}) : super(key: key);
+import '../../../../features/personalization/controllers/user_controller.dart';
+import '../../../../features/shop/models/order_model.dart';
+
+class OrderDetailAdmin extends StatelessWidget {
+  const OrderDetailAdmin({super.key, required this.order});
 
   final OrderModel order;
+
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +26,7 @@ class OrderDetail extends StatelessWidget {
     final subTotal = cartController.totalCartPrice.value;
     final totalAmount = TPricingCalculator.calculateTotalPrice(subTotal, 'US');
     final orderController = Get.put(OrderController());
+    final userController = Get.put(UserController());
 
     return Scaffold(
       appBar: TAppbar(
@@ -43,10 +38,10 @@ class OrderDetail extends StatelessWidget {
             color: order.orderStatusText == 'Processing'
                 ? TColors.primaryColor
                 : order.orderStatusText == 'Shipping'
-                    ? Colors.yellow
-                    : order.orderStatusText == 'Received'
-                        ? Colors.green
-                        : Colors.red, // Default color if no conditions match
+                ? Colors.yellow
+                : order.orderStatusText == 'Received'
+                ? Colors.green
+                : Colors.red, // Default color if no conditions match
           ),
         ),
         showBackArrow: true,
@@ -57,22 +52,28 @@ class OrderDetail extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Delivery Date: ${order.formattedDeliveryDate.isNotEmpty ? order.formattedOrderDate : "N/A"} - ${order.formattedDeliveryDate} ',
-                style: const TextStyle(fontSize: 14),
-              ),
+
               const SizedBox(height: 8),
-              Text(
-                'Payment Method: ${order.paymentMethod}',
-                style: const TextStyle(fontSize: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Payment Method: ',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  Text(
+                    order.paymentMethod,
+                    style: const TextStyle(fontSize: 16,color: Colors.blueAccent),
+                  ),
+                ],
               ),
               const SizedBox(height: 16),
               const Text(
                 'Shipping Address:',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 16),
               ),
               ListTile(
-                title: Text(order.address.toString()),
+                title: Text(order.address.toString(),style: const TextStyle(fontSize: 14, color: Colors.blueAccent),),
               ),
               const SizedBox(height: 16),
               const Text(
@@ -158,70 +159,39 @@ class OrderDetail extends StatelessWidget {
         padding: const EdgeInsets.all(TSizes.defaultSpace),
         child: order.orderStatusText == 'Processing'
             ? ElevatedButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text('Cancel Order'),
-                        content: const Text(
-                            'Are you sure you want to cancel this order?'),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: const Text('No'),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              orderController.cancelledOrder(totalAmount);
-                              Navigator.of(context).pop();
-                            },
-                            child: const Text('Yes'),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                },
-                child: const Text('Cancel Order'),
-              )
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: const Text('Submit Order'),
+                  content: const Text(
+                      'Are you sure you want to Submit this order?'),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('No'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        orderController.shippedOrder(order.userId, totalAmount);
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('Yes'),
+                    ),
+                  ],
+                );
+              },
+            );
+          },
+          child: const Text('Submit Order'),)
             : order.orderStatusText == 'Cancelled'
-                ? null
-                : order.orderStatusText == 'Shipping'
-                    ? ElevatedButton(
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: const Text('Received Order'),
-                                content: const Text(
-                                    'Did you actually received the order?'),
-                                actions: <Widget>[
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: const Text('No'),
-                                  ),
-                                  TextButton(
-                                    onPressed: () {
-                                      orderController
-                                          .receivedOrder(totalAmount);
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: const Text('Yes'),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        },
-                        child: const Text('Received Order'),
-                      )
-                    : null,
+            ? null
+            : order.orderStatusText == 'Shipped'
+            ? null
+            : null,
       ),
     );
   }

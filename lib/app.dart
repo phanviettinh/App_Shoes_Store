@@ -4,6 +4,7 @@ import 'package:sports_shoe_store/bindings/genaral_bindings.dart';
 import 'package:sports_shoe_store/utils/constants/colors.dart';
 import 'package:sports_shoe_store/utils/theme/theme.dart';
 
+import 'features/shop/controllers/product/cart_controller.dart';
 import 'routes/app_route.dart';
 
 class App extends StatelessWidget {
@@ -11,6 +12,7 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return GetMaterialApp(
       themeMode: ThemeMode.system,
       theme: TAppTheme.lightTheme,

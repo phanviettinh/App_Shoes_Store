@@ -4,6 +4,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:sports_shoe_store/common/widgets/custom_shapes/containers/rounded_container.dart';
 import 'package:sports_shoe_store/common/widgets/loaders/animation_loader.dart';
 import 'package:sports_shoe_store/data/repositories/orders/orders_repository.dart';
+import 'package:sports_shoe_store/features/shop/controllers/product/cart_controller.dart';
 import 'package:sports_shoe_store/features/shop/controllers/product/order_controller.dart';
 import 'package:sports_shoe_store/features/shop/screens/order/order.dart';
 import 'package:sports_shoe_store/features/shop/screens/order/order_detail.dart';
@@ -20,29 +21,33 @@ class TOrderListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dark = THelperFunctions.isDarkMode(context);
+
     final controller = Get.put(OrderController());
 
     return FutureBuilder(
         future: controller.fetUserOrders(),
-        builder: (_, snapshot){
+        builder: (_, snapshot) {
           final emptyWidget = TAnimationLoaderWidget(
-              text: 'Whoop! No Order Yet!',
-              animation: TImages.masterCard,
-              showAction: true,
-              actionText: 'Let\'s fill it',
-              onActionPressed: () => Get.off(() => const NavigationMenu()),
+            text: 'Whoop! No Order Yet!',
+            animation: TImages.masterCard,
+            showAction: true,
+            actionText: 'Let\'s fill it',
+            onActionPressed: () => Get.off(() => const NavigationMenu()),
           );
 
-          final response = TCloudHelperFunctions.checkMultiRecordState(snapshot: snapshot,nothingFound: emptyWidget);
-          if(response != null) return response;
+          final response = TCloudHelperFunctions.checkMultiRecordState(
+              snapshot: snapshot, nothingFound: emptyWidget);
+          if (response != null) return response;
 
           ///congratulation record found
           final orders = snapshot.data!;
           return ListView.separated(
             shrinkWrap: true,
-            separatorBuilder: (_,__) => const SizedBox(height: TSizes.spaceBtwItems,),
+            separatorBuilder: (_, __) => const SizedBox(
+              height: TSizes.spaceBtwItems,
+            ),
             itemCount: orders.length,
-            itemBuilder: (_,index) {
+            itemBuilder: (_, index) {
               final order = orders[index];
               return TRoundedContainer(
                 showBorder: true,
@@ -56,72 +61,117 @@ class TOrderListItem extends StatelessWidget {
                       children: [
                         /// icon
                         const Icon(Iconsax.ship),
-                        const SizedBox(width: TSizes.spaceBtwItems / 2,),
+                        const SizedBox(
+                          width: TSizes.spaceBtwItems / 2,
+                        ),
 
                         /// status & date
-                        Expanded(child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(order.orderStatusText,style: Theme.of(context).textTheme.bodyLarge!.apply(color: order.orderStatusText == 'Processing' ? TColors.primaryColor : Colors.red,fontWeightDelta: 1),),
-                             Text(order.formattedOrderDate,style: const TextStyle(fontSize: 16,fontWeight: FontWeight.bold),)
-                          ],
-                        ),),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                order.orderStatusText,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge!
+                                    .apply(
+                                        color: order.orderStatusText == 'Processing' ? TColors.primaryColor :
+                                        order.orderStatusText == 'Shipping' ? Colors.yellow :
+                                        order.orderStatusText == 'Received' ? Colors.green : Colors.red,
+                                        fontWeightDelta: 1),
+                              ),
+                              Text(
+                                order.formattedOrderDate,
+                                style: const TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold),
+                              )
+                            ],
+                          ),
+                        ),
 
                         ///icon
-                        IconButton(onPressed: () => Get.to(() =>  OrderDetail(order: order)),
-                            icon: const Icon(Iconsax.arrow_right_34,size: TSizes.iconSm,))
+                        IconButton(
+                            onPressed: () =>
+                                Get.to(() => OrderDetail(order: order)),
+                            icon: const Icon(
+                              Iconsax.arrow_right_34,
+                              size: TSizes.iconSm,
+                            ))
                       ],
                     ),
-                    const SizedBox(height: TSizes.spaceBtwItems,),
+                    const SizedBox(
+                      height: TSizes.spaceBtwItems,
+                    ),
 
                     ///row2
                     Row(
                       children: [
-                        Expanded(child: Row(
-                          children: [
-                            /// icon
-                            const Icon(Iconsax.tag),
-                            const SizedBox(width: TSizes.spaceBtwItems / 2,),
+                        Expanded(
+                          child: Row(
+                            children: [
+                              /// icon
+                              const Icon(Iconsax.tag),
+                              const SizedBox(
+                                width: TSizes.spaceBtwItems / 2,
+                              ),
 
-                            /// status & date
-                            Expanded(child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('Order',style: Theme.of(context).textTheme.labelMedium),
-                                Text(order.id,style: Theme.of(context).textTheme.titleMedium)
-                              ],
-                            ),),
+                              /// status & date
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('Order',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelMedium),
+                                    Text(order.id,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium)
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
 
-                          ],
-                        ),),
                         ///row3
-                        Expanded(child: Row(
-                          children: [
-                            /// icon
-                            const Icon(Iconsax.calendar),
-                            const SizedBox(width: TSizes.spaceBtwItems / 2,),
+                        Expanded(
+                          child: Row(
+                            children: [
+                              /// icon
+                              const Icon(Iconsax.calendar),
+                              const SizedBox(
+                                width: TSizes.spaceBtwItems / 2,
+                              ),
 
-                            /// status & date
-                            Expanded(child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('Shipping Date',style: Theme.of(context).textTheme.labelMedium),
-                                Text(order.formattedDeliveryDate,style: Theme.of(context).textTheme.titleMedium)
-                              ],
-                            ),),
-
-                          ],
-                        ),)
+                              /// status & date
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('Shipping Date',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelMedium),
+                                    Text(order.formattedDeliveryDate,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium)
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
                       ],
                     ),
-
-
                   ],
                 ),
               );
             },
           );
-        }
-    );
+        });
   }
 }
