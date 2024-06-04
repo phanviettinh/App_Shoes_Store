@@ -1,6 +1,6 @@
 class ProductAttributeModel{
   String? name;
-  final List<String>? values;
+  late final List<String>? values;
   ProductAttributeModel({this.name, this.values});
 
 

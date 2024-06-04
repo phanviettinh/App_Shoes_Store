@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:sports_shoe_store/admin/screen/brands/show_brands_admin.dart';
+import 'package:sports_shoe_store/admin/screen/categories/show_category.dart';
 import 'package:sports_shoe_store/admin/screen/orders/order_admin.dart';
+import 'package:sports_shoe_store/admin/screen/products/show_product_admin.dart';
 import 'package:sports_shoe_store/admin/signup/signup_admin.dart';
 import 'package:sports_shoe_store/common/widgets/shimmer/shimmer.dart';
 import 'package:sports_shoe_store/data/repositories/authentication/authentication_repository.dart';
 import 'package:sports_shoe_store/features/personalization/controllers/user_controller.dart';
 import 'package:sports_shoe_store/features/personalization/screens/profile/profile_screen.dart';
 import 'package:sports_shoe_store/features/shop/controllers/product/order_controller.dart';
+import 'package:sports_shoe_store/features/shop/controllers/product/product_controller.dart';
 import 'package:sports_shoe_store/utils/constants/colors.dart';
 import 'package:sports_shoe_store/utils/constants/sizes.dart';
 import 'package:sports_shoe_store/utils/constants/text_strings.dart';
@@ -23,6 +27,7 @@ class HomeScreenAdmin extends StatelessWidget {
   Widget build(BuildContext context) {
     final dark = THelperFunctions.isDarkMode(context);
     final controller = Get.put(UserController());
+    final controllerProduct = Get.put(ProductController());
 
     return Scaffold(
       backgroundColor: dark ? TColors.black : TColors.light,
@@ -72,17 +77,19 @@ class HomeScreenAdmin extends StatelessWidget {
               ),
               onTap: () => Get.to(() => const OrderAdmin()),
             ),
+
             ListTile(
-              title: const Row(
-                children: [
-                  Icon(Iconsax.box),
-                  SizedBox(width: TSizes.spaceBtwItems / 2,),
-                  Text('Products')
-                ],
+                title: const Row(
+                  children: [
+                    Icon(Iconsax.box),
+                    SizedBox(width: TSizes.spaceBtwItems / 2,),
+                    Text('Products')
+                  ],
+                ),
+                onTap: () => Get.to(() =>  ShowProductAdmin(title: 'Products',futureMethod: controllerProduct.fetchAllFeaturedProductsNotIsFeatured(),
+                )),
               ),
-              onTap: () {
-              },
-            ),
+
             ListTile(
               title: const Row(
                 children: [
@@ -91,8 +98,7 @@ class HomeScreenAdmin extends StatelessWidget {
                   Text('Brands')
                 ],
               ),
-              onTap: () {
-              },
+              onTap: () => Get.to(() => const ShowBrandAdmin()),
             ),
             ListTile(
               title: const Row(
@@ -102,8 +108,7 @@ class HomeScreenAdmin extends StatelessWidget {
                   Text('Categories')
                 ],
               ),
-              onTap: () {
-              },
+              onTap: () => Get.to(() => const ShowCategory()),
             ),
             ListTile(
               title: const Row(

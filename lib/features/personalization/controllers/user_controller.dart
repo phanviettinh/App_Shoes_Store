@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sports_shoe_store/common/widgets/loaders/loader.dart';
 import 'package:sports_shoe_store/data/repositories/authentication/authentication_repository.dart';
+import 'package:sports_shoe_store/data/repositories/orders/orders_repository.dart';
 import 'package:sports_shoe_store/data/repositories/users/user_repository.dart';
 import 'package:sports_shoe_store/features/authentication/controllers/signup/network_manager.dart';
 import 'package:sports_shoe_store/features/authentication/models/user_model.dart';
@@ -25,6 +27,8 @@ class UserController extends GetxController {
   final verifyPassword = TextEditingController();
   final userRepository = Get.put(UserRepository());
   GlobalKey<FormState> reAuthFormKey = GlobalKey<FormState>();
+  final orderRepository = Get.put(OrderRepository());
+  final fullName = TextEditingController();
 
   @override
   void onInit() {
@@ -123,37 +127,41 @@ class UserController extends GetxController {
   }
 
 
-  ///delete user warning
+  // Existing delete account warning popup
   void deleteAccountWarningPopup() {
     Get.defaultDialog(
-        contentPadding: const EdgeInsets.all(TSizes.md),
-        title: 'Delete Account',
-        middleText: 'Are you sure you want to delete your account permanently? This action is not reversible and all of you data will be removed permanently.',
-        confirm: ElevatedButton(
-          onPressed: () async => deleteUserAccount(),
-          style: ElevatedButton.styleFrom(backgroundColor: Colors.red,
-              side: const BorderSide(color: Colors.red)),
-          child: const Padding(
-            padding: EdgeInsets.symmetric(horizontal: TSizes.lg),
-            child: Text('Delete'),),
+      contentPadding: const EdgeInsets.all(TSizes.md),
+      title: 'Delete Account',
+      middleText: 'Are you sure you want to delete your account permanently? This action is not reversible and all of your data will be removed permanently.',
+      confirm: ElevatedButton(
+        onPressed: () async => deleteUserAccount(),
+        style: ElevatedButton.styleFrom(backgroundColor: Colors.red, side: const BorderSide(color: Colors.red)),
+        child: const Padding(
+          padding: EdgeInsets.symmetric(horizontal: TSizes.lg),
+          child: Text('Delete'),
         ),
-        cancel: OutlinedButton(
-          onPressed: () => Navigator.of(Get.overlayContext!).pop(),
-          child: const Text('Cancel'),)
+      ),
+      cancel: OutlinedButton(
+        onPressed: () => Navigator.of(Get.overlayContext!).pop(),
+        child: const Text('Cancel'),
+      ),
     );
   }
 
-  ///delete user account
+  // Existing delete user account method with added functionality to store orders in a temporary collection
   void deleteUserAccount() async {
     try {
       TFullScreenLoader.openLoadingDialog('Processing...', TImages.loading);
 
-      ///first re-auth user
       final auth = AuthenticationRepository.instance;
-      final provider = auth.authUser
-          .providerData
-          .map((e) => e.providerId)
-          .first;
+      final userId = auth.authUser.uid;
+
+      // Fetch and store user orders temporarily
+      final userOrders = await orderRepository.fetchUserOrders2(userId);
+      orderRepository.addTemporaryOrders(userOrders);
+
+      final provider = auth.authUser.providerData.map((e) => e.providerId).first;
+
       if (provider.isNotEmpty) {
         if (provider == 'google.com') {
           await auth.signInWithGoogle();
@@ -175,36 +183,30 @@ class UserController extends GetxController {
     }
   }
 
-  ///re-auth before deleting
+  // Existing re-authenticate method
   Future<void> reAuthenticateEmailAndPasswordUser() async {
     try {
       TFullScreenLoader.openLoadingDialog('Processing...', TImages.loading);
 
-      //check Internet connect
       final isConnected = await NetworkManager.instance.isConnected();
       if (!isConnected) {
         TFullScreenLoader.stopLoading();
         return;
       }
 
-      //form validation
       if (!reAuthFormKey.currentState!.validate()) {
         TFullScreenLoader.stopLoading();
         return;
       }
 
-      await AuthenticationRepository.instance
-          .reAuthenticateWithEmailAndPassword(verifyEmail.text.trim(), verifyPassword.text.trim());
+      await AuthenticationRepository.instance.reAuthenticateWithEmailAndPassword(verifyEmail.text.trim(), verifyPassword.text.trim());
       await AuthenticationRepository.instance.deleteAccount();
       TFullScreenLoader.stopLoading();
       Get.offAll(() => const LoginScreen());
-      TLoaders.successSnackBar(
-          title: 'Congratulations',
-          message: 'Your account has been Deleted!'
-      );
+      TLoaders.successSnackBar(title: 'Congratulations', message: 'Your account has been Deleted!');
     } catch (e) {
       TFullScreenLoader.stopLoading();
-      TLoaders.warningSnackBar(title: 'Oh Snap!',message: e.toString());
+      TLoaders.warningSnackBar(title: 'Oh Snap!', message: e.toString());
     }
   }
 

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:sports_shoe_store/admin/screen/orders/order_admin.dart';
+import 'package:sports_shoe_store/common/widgets/custom_shapes/containers/search_container.dart';
 import 'package:sports_shoe_store/common/widgets/text/section_heading.dart';
 import 'package:sports_shoe_store/features/shop/controllers/product/order_controller.dart';
 import 'package:sports_shoe_store/utils/constants/colors.dart';
@@ -23,6 +24,9 @@ class HomeProceeds extends StatelessWidget {
     return SingleChildScrollView(
       child: Column(
         children: [
+
+
+
           /// Header
           Container(
             decoration: BoxDecoration(

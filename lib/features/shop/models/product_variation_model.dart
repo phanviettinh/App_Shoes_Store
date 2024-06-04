@@ -1,5 +1,5 @@
 class ProductVariationModel {
-  final String id;
+  String id;
   String sku;
   String image;
   String? description;

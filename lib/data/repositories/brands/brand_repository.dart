@@ -54,4 +54,29 @@ class BrandRepository extends GetxController{
     }
   }
 
+
+  Stream<List<BrandModel>> getCategoryStream() {
+    return _db.collection('Brands').snapshots().map((snapshot) {
+      return snapshot.docs.map((doc) => BrandModel.fromQuerySnapshot(doc)).toList();
+    });
+  }
+
+  ///update
+  Future<void> updateBrand(String brandId, Map<String, dynamic> data) async {
+    try {
+      await _db.collection('Brands').doc(brandId).update(data);
+    } catch (e) {
+      print('Error updating Brand: $e');
+      throw 'Failed to update Brand';
+    }
+  }
+
+  ///add
+  Future<void> addBrand(BrandModel brand) async {
+    try {
+      await _db.collection('Brands').add(brand.toJson());
+    } catch (e) {
+      throw 'Failed to add category: $e';
+    }
+  }
 }

@@ -36,6 +36,43 @@ class ProductRepository extends GetxController {
     }
   }
 
+  /// Thêm sản phẩm mới
+  Future<void> addProduct(ProductModel product) async {
+    try {
+      await _db.collection('Products').add(product.toJson());
+    } catch (e) {
+      throw 'Failed to add product: $e';
+    }
+  }
+
+  Future<void> deleteProduct(String productId) async {
+    try {
+      await _db.collection('Products').doc(productId).delete();
+    } catch (e) {
+      print('Error deleting product: $e');
+      throw 'Failed to delete product';
+    }
+  }
+
+   Future<void> updateProduct(String productId, Map<String, dynamic> data) async {
+    try {
+      await _db.collection('Products').doc(productId).update(data);
+    } catch (e) {
+      print('Error updating product: $e');
+      throw 'Failed to update product';
+    }
+  }
+
+  Future<List<ProductModel>> fetchAllProducts() async {
+    try {
+      final snapshot = await _db.collection('Products').get();
+      return snapshot.docs.map((e) => ProductModel.fromSnapshot(e)).toList();
+    } catch (e) {
+      print('Error fetching products: $e');
+      throw 'Something went wrong while fetching products. Try again later';
+    }
+  }
+
   ///get limited featured products
   Future<List<ProductModel>> getAllFeaturedProducts() async {
     try {
@@ -54,6 +91,25 @@ class ProductRepository extends GetxController {
       throw 'Something went wrong. please try again';
     }
   }
+
+  ///get limited featured products
+  Future<List<ProductModel>> getAllFeaturedProductsNotIsFeatured() async {
+    try {
+      final snapshot = await _db
+          .collection('Products')
+          .get();
+      return snapshot.docs.map((e) => ProductModel.fromSnapshot(e)).toList();
+    } on FirebaseException catch (e) {
+      throw TFirebaseException(e.code).message;
+    } on FormatException catch (_) {
+      throw const TFormatException();
+    } on PlatformException catch (e) {
+      throw TPlatformException(e.code).message;
+    } catch (e) {
+      throw 'Something went wrong. please try again';
+    }
+  }
+
 
   ///get product based on the brand
   Future<List<ProductModel>> fetchProductByQuery(Query query) async {

@@ -31,6 +31,15 @@ class CategoryRepository extends GetxController {
     }
   }
 
+  /// Thêm danh muc moi
+  Future<void> addCategory(CategoryModel category) async {
+    try {
+      await _db.collection('Categories').add(category.toJson());
+    } catch (e) {
+      throw 'Failed to add category: $e';
+    }
+  }
+
 ///get sub categories
   Future<List<CategoryModel>> getSubCategories(String categoryId) async{
     try{
@@ -50,7 +59,48 @@ class CategoryRepository extends GetxController {
     }
   }
 
-///upload category to the cloud firebase
+  Future<void> deleteCategory(String categoryId) async {
+    try {
+      await _db.collection('Categories').doc(categoryId).delete();
+    } catch (e) {
+      print('Error deleting product: $e');
+      throw 'Failed to delete product';
+    }
+  }
+
+  Future<void> updateCategory(String categoryId, Map<String, dynamic> data) async {
+    try {
+      await _db.collection('Categories').doc(categoryId).update(data);
+    } catch (e) {
+      print('Error updating Brand: $e');
+      throw 'Failed to update Brand';
+    }
+  }
+
+  Stream<List<CategoryModel>> getCategoryStream() {
+    return _db.collection('Categories').snapshots().map((snapshot) {
+      return snapshot.docs.map((doc) => CategoryModel.fromQuerySnapshot(doc)).toList();
+    });
+  }
+  Future<List<CategoryModel>> fetchCategoryByQuery(Query query) async {
+    try {
+      final querySnapshot = await query.get();
+      final List<CategoryModel> productList = querySnapshot.docs
+          .map((document) => CategoryModel.fromQuerySnapshot(document))
+          .toList();
+      return productList;
+    } on FirebaseException catch (e) {
+      throw TFirebaseException(e.code).message;
+    } on FormatException catch (_) {
+      throw const TFormatException();
+    } on PlatformException catch (e) {
+      throw TPlatformException(e.code).message;
+    } catch (e) {
+      throw 'Something went wrong. please try again';
+    }
+  }
+
+  ///upload category to the cloud firebase
   Future<void> uploadDummyData(List<CategoryModel> categories) async{
     try{
       //upload all the Category along with their images

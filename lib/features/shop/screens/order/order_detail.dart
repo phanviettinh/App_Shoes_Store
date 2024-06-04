@@ -57,27 +57,50 @@ class OrderDetail extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Delivery Date: ${order.formattedDeliveryDate.isNotEmpty ? order.formattedOrderDate : "N/A"} - ${order.formattedDeliveryDate} ',
-                style: const TextStyle(fontSize: 14),
+              Container(
+                decoration: BoxDecoration(
+                  color: dark ? TColors.black : TColors.light,
+                  borderRadius: BorderRadius.circular(22.0),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 8.0,
+                      offset: Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(TSizes.defaultSpace),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+
+                    children: [
+                      Text(
+                        'Delivery Date: ${order.formattedDeliveryDate.isNotEmpty ? order.formattedOrderDate : "N/A"} - ${order.formattedDeliveryDate} ',
+                        style: const TextStyle(fontSize: 14),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Payment Method: ${order.paymentMethod}',
+                        style: const TextStyle(fontSize: 14),
+                      ),
+                      const SizedBox(height: 16),
+                      const Text(
+                        'Shipping Address:',
+                        style: TextStyle(fontSize: 14),
+                      ),
+                      ListTile(
+                        title: Text(order.address.toString()),
+                      ),
+                      const SizedBox(height: 16),
+                    ],
+                  ),
+                ),
               ),
-              const SizedBox(height: 8),
-              Text(
-                'Payment Method: ${order.paymentMethod}',
-                style: const TextStyle(fontSize: 16),
-              ),
-              const SizedBox(height: 16),
+              const SizedBox(height: TSizes.spaceBtwItems,),
               const Text(
-                'Shipping Address:',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              ListTile(
-                title: Text(order.address.toString()),
-              ),
-              const SizedBox(height: 16),
-              const Text(
-                'Items:',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                'Products:',
+                style: TextStyle(fontSize: 14),
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -93,10 +116,10 @@ class OrderDetail extends StatelessWidget {
                   );
                 }).toList(),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: TSizes.spaceBtwItems,),
               const Text(
                 'Order overview',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 14),
               ),
               const SizedBox(height: 8),
 

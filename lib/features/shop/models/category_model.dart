@@ -46,5 +46,13 @@ class CategoryModel {
          return CategoryModel.empty();
        }
  }
- }
+
+  factory CategoryModel.fromQuerySnapshot(DocumentSnapshot<Object?> document) {
+    final data = document.data() as Map<String, dynamic>;
+    return CategoryModel(id: document.id, name: data['Name'] ?? '', image: data['Image'] ?? '', isFeatured: data['IsFeatured'] ?? false
+
+    );
+  }
+
+}
 

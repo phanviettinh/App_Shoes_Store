@@ -28,7 +28,10 @@ class OrderController extends GetxController{
   var orders = <OrderModel>[].obs;
     var receivedOrdersCount = 0.obs;
   var totalProfit = 0.0.obs;
-  var showTotalAmount = false.obs; // Thêm biến này
+  var showTotalAmount = false.obs;
+  final RxList<OrderModel> allOrders = <OrderModel>[].obs;
+  final RxList<OrderModel> filteredOrders = <OrderModel>[].obs;
+  final searchController = TextEditingController();
 
   ///
   Future<List<OrderModel>> fetUserOrders() async{
@@ -41,15 +44,40 @@ class OrderController extends GetxController{
     }
   }
 
-  ///
-  Future<List<OrderModel>> fetAllUserOrders() async{
-    try{
-      final allOrders = await orderRepository.fetchAllOrders();
-      orders.value = allOrders;
-      return allOrders;
-    }catch(e){
-      TLoaders.warningSnackBar(title: 'Oh Snap!',message: e.toString());
-      return[];
+  @override
+  void onInit() {
+    super.onInit();
+    fetchAllUserOrders();
+  }
+
+  Future<void> fetchAllUserOrders() async {
+    try {
+      final orders = await orderRepository.fetchAllUserOrders();
+      allOrders.assignAll(orders);
+      filteredOrders.assignAll(orders);
+      print('Fetched orders: ${orders.length}'); // Debugging line
+    } catch (e) {
+      print('Error fetching all user orders: $e'); // Debugging line
+    }
+  }
+
+  void filterOrders(String status) {
+    if (status.isEmpty) {
+      filteredOrders.assignAll(allOrders);
+    } else {
+      filteredOrders.assignAll(allOrders.where((order) => order.orderStatusText.toLowerCase().contains(status.toLowerCase())).toList());
+    }
+  }
+
+  ///xoa
+  Future<void> deleteOrder(String userId, String orderId) async {
+    try {
+      await orderRepository.deleteOrder(userId, orderId);
+      allOrders.removeWhere((order) => order.id == orderId);
+      filteredOrders.removeWhere((order) => order.id == orderId);
+      update(); // Refresh the UI
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to delete order: $e');
     }
   }
   ///lay cac hoa don da nhan
@@ -63,6 +91,7 @@ class OrderController extends GetxController{
       TLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
     }
   }
+
 
   void processOrder(double totalAmount) async {
     try {

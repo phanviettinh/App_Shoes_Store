@@ -11,7 +11,48 @@ class OrderRepository extends GetxController{
   ///variable
   final _db = FirebaseFirestore.instance;
 
+  List<OrderModel> temporaryOrders = [];
 
+/// Fetch all orders for all users
+  Future<List<OrderModel>> fetchAllUserOrders() async {
+    try {
+      // Get all user documents
+      final usersSnapshot = await _db.collection('Users').get();
+
+      List<OrderModel> allOrders = [];
+
+      // Iterate through each user document to get their orders
+      for (var userDoc in usersSnapshot.docs) {
+        final ordersSnapshot = await _db
+            .collection('Users')
+            .doc(userDoc.id)
+            .collection('Orders')
+            .get();
+
+        // Add each order to the list
+        allOrders.addAll(ordersSnapshot.docs.map((e) => OrderModel.fromSnapshot(e)).toList());
+      }
+
+      return allOrders;
+    } catch (e) {
+      print('Error fetching all user orders: $e');
+      throw 'Something went wrong while fetching all user orders. Try again later';
+    }
+  }
+
+  ///xoa
+
+  Future<void> deleteOrder(String userId, String orderId) async {
+    try {
+      // Delete order from the user's subcollection
+      await _db.collection('Users').doc(userId).collection('Orders').doc(orderId).delete();
+      // Optionally, delete order from the main orders collection if it exists there
+      await _db.collection('Orders').doc(orderId).delete();
+    } catch (e) {
+      print('Error deleting order: $e');
+      throw 'Failed to delete order';
+    }
+  }
 
   ///get order related to current user
   Future<List<OrderModel>> fetchUserOrders() async{
@@ -25,7 +66,14 @@ class OrderRepository extends GetxController{
       throw 'Something went wrong while fetching order information. Try again later';
     }
   }
-
+  Future<List<OrderModel>> fetchUserOrders2(String userId) async {
+    try {
+      final result = await _db.collection('Users').doc(userId).collection('Orders').get();
+      return result.docs.map((e) => OrderModel.fromSnapshot(e)).toList();
+    } catch (e) {
+      throw 'Something went wrong while fetching order information. Try again later';
+    }
+  }
   // New method to fetch all orders for admin
   Future<List<OrderModel>> fetchAllOrders() async {
 
@@ -34,6 +82,8 @@ class OrderRepository extends GetxController{
       return result.docs.map((e) => OrderModel.fromSnapshot(e)).toList();
 
   }
+
+
   Future<List<OrderModel>> fetchUserOrdersAdmin(String userId) async {
     try {
       if (userId.isEmpty) throw 'Unable to find user information. Try again in a few minutes.';
@@ -69,13 +119,17 @@ class OrderRepository extends GetxController{
     }
   }
 
-// Hàm lấy các đơn hàng có trạng thái "Received"
   Future<List<OrderModel>> fetchReceivedOrders() async {
     try {
+      List<OrderModel> receivedOrders = [];
+
+      // Nếu có các đơn đặt hàng tạm thời, thêm chúng vào danh sách
+      if (temporaryOrders.isNotEmpty) {
+        receivedOrders.addAll(temporaryOrders.where((order) => order.status == OrderStatus.received));
+      }
+
       // Lấy tất cả các tài liệu người dùng
       final usersSnapshot = await _db.collection('Users').get();
-
-      List<OrderModel> receivedOrders = [];
 
       // Lặp qua từng tài liệu người dùng để tìm đơn hàng có trạng thái "Received"
       for (var userDoc in usersSnapshot.docs) {
@@ -97,4 +151,8 @@ class OrderRepository extends GetxController{
     }
   }
 
+  // Phương thức để thêm đơn đặt hàng vào biến tạm thời
+  void addTemporaryOrders(List<OrderModel> orders) {
+    temporaryOrders.addAll(orders);
+  }
 }
