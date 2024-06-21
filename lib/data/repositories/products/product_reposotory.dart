@@ -16,6 +16,13 @@ class ProductRepository extends GetxController {
   ///firebase instance of database interactions
   final _db = FirebaseFirestore.instance;
 
+  Stream<List<ProductModel>> getProductStream() {
+    return _db.collection('Products').snapshots().map((snapshot) {
+      return snapshot.docs.map((doc) => ProductModel.fromQuerySnapshot(doc))
+          .toList();
+    });
+  }
+
   ///get limited featured products
   Future<List<ProductModel>> getFeaturedProducts() async {
     try {

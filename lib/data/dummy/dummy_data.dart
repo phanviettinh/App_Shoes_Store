@@ -53,6 +53,10 @@ class TDummyData {
     CategoryModel(
         id: '14', name: 'JeweleryI', image: TImages.climbing, isFeatured: true),
   ];
+  static final List<BrandModel> brands = [
+    BrandModel(
+        id: '1', name: 'Nike', image: TImages.climbing, isFeatured: true),
+  ];
 
   static final List<ProductModel> products = [
     ///product1

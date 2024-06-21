@@ -32,7 +32,11 @@ class UserRepository extends GetxController{
       throw 'Something went wrong. please try again';
     }
   }
-
+  Stream<List<UserModel>> getUserStream() {
+    return _db.collection('Users').snapshots().map((snapshot) {
+      return snapshot.docs.map((doc) => UserModel.fromQuerySnapshot(doc)).toList();
+    });
+  }
 
   ///Function to fetch user details based on user ID.
   Future<UserModel> fetchUserDetail() async{
@@ -116,6 +120,16 @@ class UserRepository extends GetxController{
       throw TPlatformException(e.code).message;
     } catch(e){
       throw 'Something went wrong. please try again';
+    }
+  }
+
+  ///delete
+  Future<void> deleteUser(String userId) async {
+    try {
+      await _db.collection('Users').doc(userId).delete();
+    } catch (e) {
+      print('Error deleting product: $e');
+      throw 'Failed to delete product';
     }
   }
 }

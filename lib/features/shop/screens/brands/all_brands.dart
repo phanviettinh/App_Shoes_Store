@@ -13,12 +13,14 @@ import 'package:sports_shoe_store/features/shop/screens/brands/brand_products.da
 import 'package:sports_shoe_store/utils/constants/sizes.dart';
 
 class AllBrandScreen extends StatelessWidget {
-  const AllBrandScreen({super.key});
+  const AllBrandScreen({super.key, this.futureMethod});
+
+  final Future<List<BrandModel>>? futureMethod;
+
 
   @override
   Widget build(BuildContext context) {
     final brandController = BrandController.instance;
-
     return Scaffold(
       appBar: const TAppbar(
         title: Text('Brands'),
@@ -42,14 +44,14 @@ class AllBrandScreen extends StatelessWidget {
               Obx(() {
                 if(brandController.isLoading.value) return const TBrandShimmer();
 
-                if(brandController.allBrands.isEmpty){
+                if(brandController.featuredBrands.isEmpty){
                   return Center(child: Text('No Data Found!',style: Theme.of(context).textTheme.bodyMedium!.apply(color: Colors.white),));
                 }else{
                   return  TGridLayout(
-                      itemCount: brandController.allBrands.length,
+                      itemCount: brandController.featuredBrands.length,
                       mainAxisExtent: 80,
                       itemBuilder: (_,index){
-                        final brand = brandController.allBrands[index];
+                        final brand = brandController.featuredBrands[index];
                         return  TBrandCard(
                           showBorder: true,
                           brand: brand,

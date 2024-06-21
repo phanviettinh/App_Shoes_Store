@@ -10,6 +10,7 @@ import 'package:sports_shoe_store/data/repositories/brands/brand_repository.dart
 import 'package:sports_shoe_store/data/repositories/products/product_reposotory.dart';
 import 'package:sports_shoe_store/features/shop/models/brand_model.dart';
 import 'package:sports_shoe_store/features/shop/models/product_model.dart';
+import 'package:uuid/uuid.dart';
 
 class BrandController extends GetxController{
   static BrandController get instance => Get.find();
@@ -19,9 +20,9 @@ class BrandController extends GetxController{
   final RxList<BrandModel> allBrands = <BrandModel>[].obs;
   final brandRepository = Get.put(BrandRepository());
 
-  final id = TextEditingController();
-  final image = TextEditingController();
-  final name = TextEditingController();
+  final textIdController = TextEditingController();
+  final imageController = TextEditingController();
+  final nameController = TextEditingController();
   final RxBool isFeatured = false.obs;
   final productsCount = TextEditingController();
 
@@ -30,19 +31,21 @@ class BrandController extends GetxController{
   final RxString selectedCategoryId = ''.obs;
 
   TextEditingController searchController = TextEditingController(); // Added
-  final RxList<BrandModel> allBrand = <BrandModel>[].obs;
   RxList<BrandModel> filteredBrands = <BrandModel>[].obs; // Added
+
+  final RxString imageUrl = ''.obs; // Quan sát URL hình ảnh
 
   @override
   void onInit() {
-    listenToCategories();
+    getFeaturedBrand();
     super.onInit();
+    listenToCategories();
   }
   ///load brands
   void listenToCategories() {
     brandRepository.getCategoryStream().listen((categories) {
       allBrands.assignAll(categories);
-      featuredBrands.assignAll(allBrands.where((brand) => brand.isFeatured ?? false).take(4));
+      featuredBrands.assignAll(allBrands.where((brand) => brand.isFeatured! ).take(10));
       filteredBrands.assignAll(allBrands); // Initialize filteredCategories
       isLoading.value = false;
     }, onError: (error) {
@@ -50,7 +53,18 @@ class BrandController extends GetxController{
       TLoaders.errorSnackBar(title: 'Oh Snap!', message: error.toString());
     });
   }
-
+  Future<void> getFeaturedBrand() async{
+    try{
+      isLoading.value = true;
+      final brands = await brandRepository.getAllBrands();
+      allBrands.assignAll(brands);
+      featuredBrands.assignAll(allBrands.where((brand) => brand.isFeatured ?? false).take(4));
+    }catch(e){
+      TLoaders.errorSnackBar(title: 'Oh snap', message: e.toString());
+    }finally{
+      isLoading.value = false;
+    }
+  }
   ///get brands for category
   Future<List<BrandModel>> getBrandsForCategory(String categoryId) async{
     try{
@@ -73,26 +87,50 @@ class BrandController extends GetxController{
     }
   }
 
-
   Future<void> pickAndUploadImage() async {
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      final file = File(pickedFile.path);
-      final ref = storage.ref().child('Brands/Images/${DateTime.now().millisecondsSinceEpoch}.jpg');
-      final uploadTask = ref.putFile(file);
-      final snapshot = await uploadTask.whenComplete(() => {});
-      final downloadUrl = await snapshot.ref.getDownloadURL();
+    try {
+      // Chọn hình ảnh từ thư viện
+      final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
-      image.text = downloadUrl;
+      if (pickedFile != null) {
+        // Tạo File từ đường dẫn đã chọn
+        final file = File(pickedFile.path);
+
+        // Lấy phần mở rộng của tệp
+        final fileExtension = pickedFile.path.split('.').last;
+
+        // Tạo tham chiếu đến Firebase Storage
+        final ref = FirebaseStorage.instance
+            .ref()
+            .child('Brands/Images/${DateTime.now().millisecondsSinceEpoch}.jpg');
+
+        // Tải tệp lên Firebase Storage
+        final uploadTask = ref.putFile(file);
+        final snapshot = await uploadTask.whenComplete(() => {});
+
+        // Lấy URL tải xuống của tệp đã tải lên
+        final downloadUrl = await snapshot.ref.getDownloadURL();
+
+        // Cập nhật URL hình ảnh và TextEditingController
+        imageUrl.value = downloadUrl;
+        imageController.text = downloadUrl;
+        // Làm mới danh sách để cập nhật giao diện
+        imageUrl.refresh();
+        print('Image uploaded successfully: $downloadUrl');
+      }
+    } catch (e) {
+      print('Error uploading image: $e');
+      Get.snackbar('Error', 'Failed to upload image. Please try again.');
     }
   }
+
 
   /// search brands by name
   void filterBrand(String query) {
     if (query.isEmpty) {
       filteredBrands.assignAll(allBrands);
     } else {
-      filteredBrands.assignAll(allBrands.where((category) => category.name.toLowerCase().contains(query.toLowerCase())).toList());
+      filteredBrands.assignAll(allBrands.where((brand) => brand.name.toLowerCase().contains(query.toLowerCase())).toList());
     }
   }
 
@@ -101,45 +139,62 @@ class BrandController extends GetxController{
     final brandId = selectedCategoryId.value = brand.id;
 
     final data =  {
-      'Id': id.text,
-      'Image': image.text,
-      'Name': name.text,
+      'Id': textIdController.text,
+      'Image': imageController.text,
+      'Name': nameController.text,
       'IsFeatured': isFeatured.value,
-      'ProductsCount': productsCount.text,
+      'ProductsCount': 1,
     };
 
 
     await brandRepository.updateBrand(brandId, data);
-    Get.offAll(() => const HomeScreenAdmin());
+    Get.back(result: true); // Trả kết quả thành công
     Get.snackbar('Success', 'Brand updated successfully');
 
   }
 
+  Future<void> deleteBrand(String brandId) async {
+    try {
+      await brandRepository.deleteBrand(brandId);
+      featuredBrands.removeWhere((brand) => brand.id == brandId);
+      Get.snackbar('Success', 'Brand deleted successfully');
+
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to delete product: $e');
+    }
+  }
+
   ///add category
   Future<void> saveBrand() async {
-    final brand = BrandModel(id: id.text, name: name.text, image: image.text, isFeatured: isFeatured.value,productsCount: 1,
+    var uuid = const Uuid();
+    String brandId = uuid.v4(); // Tạo ID ngẫu nhiên
+
+    final brand = BrandModel(id: brandId, name: nameController.text, image: imageController.text, isFeatured: isFeatured.value,productsCount: 1,
     );
 
     try {
       await brandRepository.addBrand(brand);
+      Get.back(result: true); // Trả kết quả thành công
       Get.snackbar('Success', 'Brand added successfully');
-      Get.offAll(() => const HomeScreenAdmin());
     } catch (e) {
       Get.snackbar('Error', 'Failed to add brand: $e');
     }
   }
 
   void setBrandData(BrandModel brand) {
-    image.text = brand.image;
-    name.text = brand.name;
+    imageController.text = brand.image;
+    nameController.text = brand.name;
+    imageUrl.value = brand.image;
     isFeatured.value = brand.isFeatured!;
     productsCount.text = brand.productsCount.toString();
   }
 
   void resetBrandData() {
-    image.clear();
-    name.clear();
+    imageController.clear();
+    nameController.clear();
     isFeatured.value = false;
     productsCount.clear();
+    imageUrl.value = '';
+
   }
 }

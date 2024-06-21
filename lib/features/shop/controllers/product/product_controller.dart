@@ -19,35 +19,11 @@ class ProductController  extends GetxController{
   final product = Get.put(AllProductController());
 
 
-
   @override
   void onInit() {
     fetchFeaturedProducts();
     super.onInit();
   }
-
-  Future<void> deleteProduct(String productId) async {
-    try {
-      await productRepository.deleteProduct(productId);
-      featuredProducts.removeWhere((product) => product.id == productId);
-      Get.offAll(() => const HomeScreenAdmin());
-      Get.snackbar('Success', 'Product deleted successfully');
-
-    } catch (e) {
-      Get.snackbar('Error', 'Failed to delete product: $e');
-    }
-  }
-  // Hàm để load lại danh sách sản phẩm
-
-  Future<void> fetchAllProducts() async {
-    try {
-      final products = await productRepository.fetchAllProducts();
-      featuredProducts.assignAll(products);
-    } catch (e) {
-      print('Error fetching products: $e');
-    }
-  }
-
 
   void fetchFeaturedProducts() async{
     try{
@@ -62,6 +38,16 @@ class ProductController  extends GetxController{
       TLoaders.errorSnackBar(title: 'Oh Snap!',message: e.toString());
     }finally{
       isLoading.value = false;
+    }
+  }
+
+  // Hàm để load lại danh sách sản phẩm
+  Future<void> fetchAllProducts() async {
+    try {
+      final products = await productRepository.fetchAllProducts();
+      featuredProducts.assignAll(products);
+    } catch (e) {
+      print('Error fetching products: $e');
     }
   }
 

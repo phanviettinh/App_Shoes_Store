@@ -45,7 +45,7 @@ class TBrandCard extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                  TBrandTitleWithVerifiedIcon(title: brand.name,brandTextSizes: TextSizes.large,),
-                Text('${brand.productsCount ?? 0} products',overflow: TextOverflow.ellipsis,style: Theme.of(context).textTheme.labelMedium,)
+                Text('Products',overflow: TextOverflow.ellipsis,style: Theme.of(context).textTheme.labelMedium,)
               ],
             ))
           ],

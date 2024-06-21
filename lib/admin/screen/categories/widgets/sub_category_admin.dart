@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:iconsax/iconsax.dart';
+import 'package:sports_shoe_store/admin/screen/brands/add_brands_admin.dart';
 import 'package:sports_shoe_store/admin/screen/categories/add_category.dart';
 import 'package:sports_shoe_store/common/widgets/appbar/appbar.dart';
+import 'package:sports_shoe_store/common/widgets/icon/circular_icon.dart';
 import 'package:sports_shoe_store/common/widgets/product/product_carts/product_cart_horizontal.dart';
 import 'package:sports_shoe_store/common/widgets/shimmer/horizontal_product_shimmer.dart';
 import 'package:sports_shoe_store/common/widgets/text/section_heading.dart';
@@ -27,6 +30,39 @@ class SubCategoryAdmin extends StatelessWidget {
             style: TextStyle(
                 fontSize: 20, color: dark ? TColors.white : TColors.dark)),
         showBackArrow: true,
+        actions: [
+          Row(
+            children: [
+              TCircularIcon(icon: Iconsax.edit,onPressed: () => Get.to(() => AddCategory(category: category,))),
+              const SizedBox(width: TSizes.spaceBtwItems,),
+              TCircularIcon(icon: Icons.delete,onPressed: ()  {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      content: const Text('Are you sure?'),
+                      actions: <Widget>[
+                        TextButton(
+                          child: const Text('No'),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                        TextButton(
+                            child: const Text('Yes'),
+                            onPressed: () => controller.deleteCategory(category.id)
+                        ),
+
+                      ],
+                    );
+                  },
+                );
+              })
+
+            ],
+          )
+        ],
+
       ),
       body: Container(
         padding: const EdgeInsets.all(TSizes.defaultSpace),
@@ -37,7 +73,6 @@ class SubCategoryAdmin extends StatelessWidget {
                 padding: const EdgeInsets.all(TSizes.defaultSpace),
                 child: Column(
                   children: [
-
 
                     ///sub_categories
                     FutureBuilder(future: controller.getSubCategories(category.id), builder: (context, snapshot){
@@ -102,28 +137,6 @@ class SubCategoryAdmin extends StatelessWidget {
                 ),
               ),
             )
-          ],
-        ),
-      ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(TSizes.defaultSpace),
-        child: Row(
-          children: [
-            Expanded(
-              child: OutlinedButton(
-                onPressed: () => controller.deleteCategory(category.id),
-                child: const Text('Delete'),
-              ),
-            ),
-            const SizedBox(width: TSizes.defaultSpace),
-            Expanded(
-              child: ElevatedButton(
-                onPressed: () {
-                  Get.to(() =>  AddCategory(category: category,));
-                },
-                child: const Text('Update'),
-              ),
-            ),
           ],
         ),
       ),

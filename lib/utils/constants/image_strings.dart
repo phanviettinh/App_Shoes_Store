@@ -38,7 +38,7 @@ class TImages {
 
   ///product
 
-  static const String adidasIcon = "assets/images/products/adidas/adidas_icon.jpg";
+  static const String adidasIcon = "assets/images/products/adidas/Adidas.jpg";
   static const String adidasIconRm = "assets/images/products/adidas/adidas_icon_rm.jpg";
 
   static const String adidasRm1 = "assets/images/products/adidas/adidas_FORUM/imageRm1.png";
@@ -49,13 +49,13 @@ class TImages {
 
 
 /// brands
-  static const String adidas = "assets/icons/brands/adidas_icon.jpg";
-  static const String nike = "assets/icons/brands/nike.png";
-  static const String converse = "assets/icons/brands/converse.jpg";
-  static const String newBalance = "assets/icons/brands/newbalance.jpg";
-  static const String puma = "assets/icons/brands/puma.png";
-  static const String vans = "assets/icons/brands/vans.jpg";
-  static const String underArmour = "assets/icons/brands/underarmour.jpg";
+  static const String adidas = "assets/icons/brands/Adidas.jpg";
+  static const String nike = "assets/icons/brands/Nike.png";
+  static const String converse = "assets/icons/brands/Converse.jpg";
+  static const String newBalance = "assets/icons/brands/New Balance.jpg";
+  static const String puma = "assets/icons/brands/Puma.png";
+  static const String vans = "assets/icons/brands/Vans.jpg";
+  static const String underArmour = "assets/icons/brands/Under Armour.jpg";
 
 
 

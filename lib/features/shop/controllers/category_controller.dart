@@ -29,16 +29,17 @@ class CategoryController extends GetxController{
   final FirebaseStorage storage = FirebaseStorage.instance;
 
   final RxString selectedCategoryId = ''.obs;
+  final RxString imageUrl = ''.obs; // Quan sát URL hình ảnh
 
-  final RxList<CategoryModel> allCategory = <CategoryModel>[].obs;
   RxList<CategoryModel> filteredCategories = <CategoryModel>[].obs; // Added
   TextEditingController searchController = TextEditingController(); // Added
 
   @override
   void onInit() {
+    fetchCategories();
+    super.onInit();
     listenToCategories();
 
-    super.onInit();
   }
 
   /// Listen to category data changes
@@ -53,15 +54,20 @@ class CategoryController extends GetxController{
       TLoaders.errorSnackBar(title: 'Oh Snap!', message: error.toString());
     });
   }
-
-    Future<List<CategoryModel>> fetchAllCategoryNotIsFeatured() async{
+  Future<void> fetchCategories() async{
     try{
-      //fetch products
-      final category = await _categoryRepository.getAllCategories();
-      return category;
-    }catch(e) {
-      TLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
-      return [];
+      // show loader while loading categories
+      isLoading.value = true;
+      // fetch categories from data source (api)
+      final categories = await _categoryRepository.getAllCategories();
+      // update the categories list
+      allCategories.assignAll(categories);
+      //filter featured categories
+      featuredCategories.assignAll(allCategories.where((category) => category.isFeatured && category.parentId.isEmpty).take(8).toList());
+    }catch(e){
+      TLoaders.errorSnackBar(title: 'oh snap!', message: e.toString());
+    }finally{
+      isLoading.value = false;
     }
   }
 
@@ -105,26 +111,50 @@ class CategoryController extends GetxController{
 
     try {
       await _categoryRepository.addCategory(category);
+      Get.back(result: true); // Trả kết quả thành công
+
       Get.snackbar('Success', 'Category added successfully');
-      Get.offAll(() => const HomeScreenAdmin());
     } catch (e) {
       Get.snackbar('Error', 'Failed to add category: $e');
     }
   }
-
-  ///load picker
   Future<void> pickAndUploadImage() async {
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      final file = File(pickedFile.path);
-      final ref = storage.ref().child('Categories/Images/${DateTime.now().millisecondsSinceEpoch}.jpg');
-      final uploadTask = ref.putFile(file);
-      final snapshot = await uploadTask.whenComplete(() => {});
-      final downloadUrl = await snapshot.ref.getDownloadURL();
+    try {
+      // Chọn hình ảnh từ thư viện
+      final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
-      image.text = downloadUrl;
+      if (pickedFile != null) {
+        // Tạo File từ đường dẫn đã chọn
+        final file = File(pickedFile.path);
+
+        // Lấy phần mở rộng của tệp
+        final fileExtension = pickedFile.path.split('.').last;
+
+        // Tạo tham chiếu đến Firebase Storage
+        final ref = FirebaseStorage.instance
+            .ref()
+            .child('Categories/Images/${DateTime.now().millisecondsSinceEpoch}.jpg');
+
+        // Tải tệp lên Firebase Storage
+        final uploadTask = ref.putFile(file);
+        final snapshot = await uploadTask.whenComplete(() => {});
+
+        // Lấy URL tải xuống của tệp đã tải lên
+        final downloadUrl = await snapshot.ref.getDownloadURL();
+
+        // Cập nhật URL hình ảnh và TextEditingController
+        imageUrl.value = downloadUrl;
+        image.text = downloadUrl;
+        // Làm mới danh sách để cập nhật giao diện
+        imageUrl.refresh();
+        print('Image uploaded successfully: $downloadUrl');
+      }
+    } catch (e) {
+      print('Error uploading image: $e');
+      Get.snackbar('Error', 'Failed to upload image. Please try again.');
     }
   }
+
 
   void showCategoryPickerDialog(BuildContext context) {
     final categoriesWithEmptyParentId = CategoryController.instance.allCategories
@@ -193,9 +223,7 @@ class CategoryController extends GetxController{
     try {
       await _categoryRepository.deleteCategory(categoryId);
       featuredCategories.removeWhere((category) => category.id == categoryId);
-      Get.offAll(() => const HomeScreenAdmin());
       Get.snackbar('Success', 'Category deleted successfully');
-
     } catch (e) {
       Get.snackbar('Error', 'Failed to delete product: $e');
     }
@@ -204,6 +232,7 @@ class CategoryController extends GetxController{
   void setCategoryData(CategoryModel category) {
     image.text = category.image;
     name.text = category.name;
+    imageUrl.value = category.image;
     isFeatured.value = category.isFeatured;
     parentId.text = category.parentId;
   }
@@ -213,6 +242,7 @@ class CategoryController extends GetxController{
     name.clear();
     isFeatured.value = false;
     parentId.clear();
+    imageUrl.value = '';
   }
 
 
@@ -228,7 +258,7 @@ class CategoryController extends GetxController{
 
 
     await _categoryRepository.updateCategory(categoryId, data);
-    Get.offAll(() => const HomeScreenAdmin());
+    Get.back(result: true); // Trả kết quả thành công
     Get.snackbar('Success', 'Category updated successfully');
 
   }

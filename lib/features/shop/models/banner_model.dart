@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class BannerModel {
   String imageUrl;
-  final String targetScreen;
-  final bool active;
+   final String targetScreen;
+   final bool active;
 
   BannerModel(
       {required this.imageUrl,
@@ -24,5 +24,12 @@ class BannerModel {
         imageUrl: data['ImageUrl'] ?? '',
         targetScreen: data['TargetScreen'] ?? '',
         active: data['Active'] ?? false);
+  }
+
+  factory BannerModel.fromQuerySnapshot(DocumentSnapshot<Object?> document) {
+    final data = document.data() as Map<String, dynamic>;
+    return BannerModel( targetScreen: data['TargetScreen'] ?? '', imageUrl: data['ImageUrl'] ?? '', active: data['Active'] ?? false
+
+    );
   }
 }

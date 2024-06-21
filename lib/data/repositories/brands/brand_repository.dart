@@ -31,6 +31,27 @@ class BrandRepository extends GetxController{
     }
   }
 
+
+  ///get limited featured products
+  // Future<List<BrandModel>> getFeaturedBrands() async {
+  //   try {
+  //     final snapshot = await _db
+  //         .collection('Brands')
+  //         .where('IsFeatured', isEqualTo: true)
+  //         .limit(4)
+  //         .get();
+  //     return snapshot.docs.map((e) => BrandModel.fromSnapshot(e)).toList();
+  //   } on FirebaseException catch (e) {
+  //     throw TFirebaseException(e.code).message;
+  //   } on FormatException catch (_) {
+  //     throw const TFormatException();
+  //   } on PlatformException catch (e) {
+  //     throw TPlatformException(e.code).message;
+  //   } catch (e) {
+  //     throw 'Something went wrong. please try again';
+  //   }
+  // }
+
   Future<List<BrandModel>> getBrandForCategory(String categoryId) async{
     try {
       QuerySnapshot brandCategoryQuery = await _db.collection('BrandCategory').where('categoryId', isEqualTo: categoryId).get();
@@ -77,6 +98,16 @@ class BrandRepository extends GetxController{
       await _db.collection('Brands').add(brand.toJson());
     } catch (e) {
       throw 'Failed to add category: $e';
+    }
+  }
+
+  ///delete
+  Future<void> deleteBrand(String brandId) async {
+    try {
+      await _db.collection('Brands').doc(brandId).delete();
+    } catch (e) {
+      print('Error deleting Brand: $e');
+      throw 'Failed to delete brand';
     }
   }
 }

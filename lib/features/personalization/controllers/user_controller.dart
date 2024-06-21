@@ -11,9 +11,12 @@ import 'package:sports_shoe_store/features/authentication/controllers/signup/net
 import 'package:sports_shoe_store/features/authentication/models/user_model.dart';
 import 'package:sports_shoe_store/features/authentication/screens/login/login.dart';
 import 'package:sports_shoe_store/features/personalization/screens/profile/widgets/re_auth_user_login_form.dart';
+import 'package:sports_shoe_store/features/shop/controllers/product/order_controller.dart';
 import 'package:sports_shoe_store/utils/constants/image_strings.dart';
 import 'package:sports_shoe_store/utils/constants/sizes.dart';
 import 'package:sports_shoe_store/utils/popups/full_screen_loader.dart';
+
+import '../../shop/models/order_model.dart';
 
 class UserController extends GetxController {
   static UserController get instance => Get.find();
@@ -28,14 +31,31 @@ class UserController extends GetxController {
   final userRepository = Get.put(UserRepository());
   GlobalKey<FormState> reAuthFormKey = GlobalKey<FormState>();
   final orderRepository = Get.put(OrderRepository());
-  final fullName = TextEditingController();
+  RxList<UserModel> allUsers = <UserModel>[].obs;
+  RxList<UserModel> featuredUsers = <UserModel>[].obs;
+  final isLoading = false.obs;
 
+
+  RxList<UserModel> filteredUsers = <UserModel>[].obs; // Added
+  TextEditingController searchController = TextEditingController(); // Added
   @override
   void onInit() {
-    super.onInit();
     fetchUserRecord();
+    super.onInit();
+    listenToUsers();
   }
 
+  void listenToUsers() {
+    userRepository.getUserStream().listen((users) {
+      allUsers.assignAll(users);
+      featuredUsers.assignAll(allUsers.where((users) => users.role == 'Client' ).take(8).toList(),);
+      filteredUsers.assignAll(allUsers); // Initialize filteredCategories
+      isLoading.value = false;
+    }, onError: (error) {
+      isLoading.value = false;
+      TLoaders.errorSnackBar(title: 'Oh Snap!', message: error.toString());
+    });
+  }
   ///fetch user record
   Future<void> fetchUserRecord() async {
     try {
@@ -48,8 +68,51 @@ class UserController extends GetxController {
       profileLoading.value = false;
     }
   }
+  // Phương thức để tìm user từ userId
+  OrderModel? getOrderById(String orderId) {
+    return OrderController.instance.orders.firstWhereOrNull((order) => order.id == orderId);
+  }
 
+  ///search
+  void filterUser(String query) {
+    if (query.isEmpty) {
+      filteredUsers.value = allUsers.where((user) => user.role == 'Client').toList();
+    } else {
+      filteredUsers.value = allUsers.where((user) {
+        return (user.fullName.toLowerCase().contains(query.toLowerCase()) ||
+            user.email.toLowerCase().contains(query.toLowerCase())) &&
+            user.role == 'Client';
+      }).toList();
+    }
+  }
 
+  ///delete
+  Future<void> deleteUser(String  userId) async {
+    try {
+      // Hiển thị thông báo đang xử lý
+      TFullScreenLoader.openLoadingDialog('Processing...', TImages.loading);
+
+      // Lấy thông tin người dùng hiện tại
+      final auth = FirebaseAuth.instance;
+      final currentUser = auth.currentUser;
+
+      // Xóa tài khoản khỏi Firebase Authentication
+      await currentUser?.delete();
+
+      // Xóa người dùng từ Firestore
+      await FirebaseFirestore.instance.collection('Users').doc(userId).delete();
+
+      // Cập nhật danh sách người dùng
+      filteredUsers.removeWhere((user) => user.id == userId);
+
+      // Hiển thị thông báo thành công
+      TFullScreenLoader.stopLoading();
+      Get.snackbar('Success', 'User deleted successfully');
+    } catch (e) {
+      TFullScreenLoader.stopLoading();
+      TLoaders.warningSnackBar(title: 'Oh Snap!', message: e.toString());
+    }
+  }
   ///save user record from any registration provider client
   Future<void> saveUserRecord(UserCredential? userCredentials) async {
     try {

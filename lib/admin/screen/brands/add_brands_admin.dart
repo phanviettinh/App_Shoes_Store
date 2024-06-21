@@ -3,7 +3,9 @@ import 'package:get/get.dart';
 import 'package:sports_shoe_store/common/widgets/appbar/appbar.dart';
 import 'package:sports_shoe_store/features/shop/controllers/brand_controller.dart';
 import 'package:sports_shoe_store/features/shop/models/brand_model.dart';
+import 'package:sports_shoe_store/utils/constants/colors.dart';
 import 'package:sports_shoe_store/utils/constants/sizes.dart';
+import 'package:sports_shoe_store/utils/helpers/helper_funtions.dart';
 
 class AddBrandsAdmin extends StatelessWidget {
   const AddBrandsAdmin({super.key, this.brand});
@@ -13,6 +15,7 @@ class AddBrandsAdmin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(BrandController());
+    final dark = THelperFunctions.isDarkMode(context);
 
     if (brand != null) {
       controller.setBrandData(brand!);
@@ -28,42 +31,72 @@ class AddBrandsAdmin extends StatelessWidget {
         showBackArrow: true,
       ),
       body: SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
               children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () => controller.pickAndUploadImage(),
-                        child: AbsorbPointer(
-                          child: TextField(
-                            controller: controller.image,
-                            decoration:
-                            const InputDecoration(labelText: 'Image URL'),
-                          ),
-                        ),
+                Expanded(
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          ///image
+                          Obx(() => Row(
+                                children: [
+                                  const Text('Choose image Brand: '),
+                                  const SizedBox(
+                                    width: TSizes.spaceBtwSections,
+                                  ),
+                                  GestureDetector(
+                                    onTap: () =>
+                                        controller.pickAndUploadImage(),
+                                    child: controller.imageUrl.value.isNotEmpty
+                                        ? Image.network(
+                                            controller.imageUrl.value,
+                                            height: 100,
+                                            width: 100)
+                                        : Container(
+                                            height: 100,
+                                            width: 100,
+                                            color: dark
+                                                ? TColors.dark
+                                                : TColors.white,
+                                            child: const Icon(Icons.add),
+                                          ),
+                                  )
+                                ],
+                              )),
+                        ],
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-                const SizedBox(
-                  height: TSizes.spaceBtwItems,
-                ),
-                TextField(
-                  controller: controller.name,
-                  decoration: const InputDecoration(labelText: 'Name'),
-                ),
-                const SizedBox(
-                  height: TSizes.spaceBtwItems,
-                ),
-
-                const SizedBox(
-                  height: TSizes.spaceBtwItems,
-                ),
-                Obx(() => Column(
+              ],
+            ),
+            const SizedBox(
+              height: TSizes.spaceBtwItems,
+            ),
+            Offstage(
+              offstage: true, // Đặt thành false để hiển thị
+              child: TextField(
+                controller: controller.textIdController,
+                decoration: const InputDecoration(labelText: 'Image URL'),
+              ),
+            ),
+            TextField(
+              controller: controller.nameController,
+              decoration: const InputDecoration(labelText: 'Name'),
+            ),
+            const SizedBox(
+              height: TSizes.spaceBtwItems,
+            ),
+            const SizedBox(
+              height: TSizes.spaceBtwItems,
+            ),
+            Obx(() => Column(
                   children: [
                     const Text('Show UI'),
                     Switch(
@@ -72,25 +105,20 @@ class AddBrandsAdmin extends StatelessWidget {
                     ),
                   ],
                 )),
-                const SizedBox(height: 16),
-                SizedBox(
-                  width: double.infinity,
-                  child: OutlinedButton(
-                    onPressed: () async {
-                      final brand = this.brand;
-                      if (brand != null) {
-                        await controller
-                            .updateBrandData(brand); // Hàm update sản phẩm
-                      } else {
-                        await controller.saveBrand(); // Hàm lưu sản phẩm mới
-                      }
-                    },
-                    child: const Text('Save'),
-                  ),
-                )
-              ],
-            ),
-          )
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          final brand = this.brand;
+          if (brand != null) {
+            await controller.updateBrandData(brand); // Hàm update sản phẩm
+          } else {
+            await controller.saveBrand(); // Hàm lưu sản phẩm mới
+          }
+        },
+        child: const Icon(Icons.save),
+      ),
     );
   }
 }

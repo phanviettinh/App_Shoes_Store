@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:sports_shoe_store/admin/screen/banners/show_banners_admin.dart';
 import 'package:sports_shoe_store/admin/screen/brands/show_brands_admin.dart';
 import 'package:sports_shoe_store/admin/screen/categories/show_category.dart';
+import 'package:sports_shoe_store/admin/screen/customers/show_customer.dart';
 import 'package:sports_shoe_store/admin/screen/orders/order_admin.dart';
 import 'package:sports_shoe_store/admin/screen/products/show_product_admin.dart';
 import 'package:sports_shoe_store/admin/signup/signup_admin.dart';
@@ -118,8 +120,18 @@ class HomeScreenAdmin extends StatelessWidget {
                   Text('Banners')
                 ],
               ),
-              onTap: () {
-              },
+              onTap: () => Get.to(() => const ShowBannerAdmin()),
+
+            ),
+            ListTile(
+              title: const Row(
+                children: [
+                  Icon(Iconsax.user),
+                  SizedBox(width: TSizes.spaceBtwItems / 2,),
+                  Text('Customers')
+                ],
+              ),
+              onTap: () => Get.to(() => const ShowCustomer()),
             ),
             const Divider(),
 

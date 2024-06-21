@@ -74,4 +74,18 @@ class UserModel {
       return UserModel.empty();
     }
   }
+
+  factory UserModel.fromQuerySnapshot(DocumentSnapshot<Object?> document) {
+    final data = document.data() as Map<String, dynamic>;
+    return UserModel(
+      id: document.id,
+      firstName: data['FirstName'] ?? '',
+      lastName: data['LastName'] ?? '',
+      username: data['Username'] ?? '',
+      email: data['Email'] ?? '',
+      phoneNumber: data['PhoneNumber'] ?? '',
+      profilePicture: data['ProfilePicture'] ?? '', role: data['Role'] ?? 'Client',
+    );
+
+  }
 }

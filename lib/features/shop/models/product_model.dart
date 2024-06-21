@@ -13,7 +13,7 @@ class ProductModel {
   DateTime? date;
   double salePrice;
   String thumbnail;
-  bool? isFeatured;
+final  bool isFeatured;
   BrandModel? brand;
   String? description;
   String? categoryId;
@@ -34,14 +34,14 @@ class ProductModel {
         this.date,
         this.images,
         this.salePrice = 0.0,
-        this.isFeatured,
+        required this.isFeatured,
         this.categoryId,
         this.productAttributes,
         this.productVariations,
         this.description});
 
   //create empty func for clean code
-  static ProductModel empty() => ProductModel(id: '', title: '', stock: 0, price: 0, thumbnail: '', productType: '');
+  static ProductModel empty() => ProductModel(id: '', title: '', stock: 0, price: 0, thumbnail: '', productType: '', isFeatured: false);
 
   toJson() {
     return {

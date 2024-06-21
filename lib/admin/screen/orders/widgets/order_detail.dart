@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:sports_shoe_store/admin/screen/customers/customer_detail.dart';
 import 'package:sports_shoe_store/common/widgets/appbar/appbar.dart';
 import 'package:sports_shoe_store/data/repositories/users/user_repository.dart';
 import 'package:sports_shoe_store/features/authentication/models/user_model.dart';
 import 'package:sports_shoe_store/features/shop/controllers/product/cart_controller.dart';
 import 'package:sports_shoe_store/features/shop/controllers/product/order_controller.dart';
 import 'package:sports_shoe_store/utils/constants/colors.dart';
+import 'package:sports_shoe_store/utils/constants/enums.dart';
 import 'package:sports_shoe_store/utils/constants/sizes.dart';
 import 'package:sports_shoe_store/utils/helpers/helper_funtions.dart';
 import 'package:sports_shoe_store/utils/helpers/pricing_caculator.dart';
@@ -14,10 +17,12 @@ import '../../../../features/personalization/controllers/user_controller.dart';
 import '../../../../features/shop/models/order_model.dart';
 
 class OrderDetailAdmin extends StatelessWidget {
-  const OrderDetailAdmin({super.key, required this.order});
+   OrderDetailAdmin({super.key, required this.order, required this.user});
 
   final OrderModel order;
-
+  final UserModel user;
+  final TextEditingController orderDateController = TextEditingController();
+  final TextEditingController deliveryDateController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -26,25 +31,20 @@ class OrderDetailAdmin extends StatelessWidget {
     final subTotal = cartController.totalCartPrice.value;
     final totalAmount = TPricingCalculator.calculateTotalPrice(subTotal, 'US');
     final orderController = Get.put(OrderController());
-    final userController = Get.put(UserController());
+    orderDateController.text = DateFormat('yyyy-MM-dd').format(order.orderDate);
+    deliveryDateController.text = DateFormat('yyyy-MM-dd').format(order.deliveryDate);
 
     return Scaffold(
-      appBar: TAppbar(
-        title: Text(
-          order.orderStatusText,
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: order.orderStatusText == 'Processing'
-                ? TColors.primaryColor
-                : order.orderStatusText == 'Shipping'
-                ? Colors.yellow
-                : order.orderStatusText == 'Received'
-                ? Colors.green
-                : Colors.red, // Default color if no conditions match
-          ),
+      appBar: AppBar(
+        title: const Text('Orders detail'),
+        leading: IconButton(
+          icon:  Icon(Icons.arrow_back,color: dark ? TColors.white : TColors.dark,),
+          onPressed: () async {
+            // Gọi phương thức fetch lại dữ liệu khi ấn nút back
+            await orderController.fetchAllUserOrders();
+            Get.back(result: true);
+          },
         ),
-        showBackArrow: true,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -52,33 +52,141 @@ class OrderDetailAdmin extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              DropdownButtonFormField<String>(
+                value: order.orderStatusText,
+                onChanged: (newValue) {
+                  // Cập nhật trạng thái đơn hàng
+                  order.orderStatusText == newValue;
 
-              const SizedBox(height: 8),
+                  // Tùy vào giá trị newValue, gọi các hàm cập nhật trạng thái từ orderController tương ứng
+                  switch (newValue) {
+                    case 'Processing':
+                      orderController.processOrderAdmin(user.id,totalAmount,orderId: order.id);
+                      break;
+                    case 'Shipping':
+                      orderController.shippedOrder(user.id, totalAmount,orderId: order.id);
+                      break;
+                    case 'Received':
+                      orderController.receivedOrderAdmin(user.id, totalAmount,orderId: order.id);
+                      break;
+                    case 'Cancelled':
+                      orderController.cancelledOrderAdmin(user.id, totalAmount,orderId: order.id);
+                      break;
+                    default:
+                    // Xử lý trường hợp mặc định nếu cần
+                      break;
+                  }
+                },
+                items: orderController.orderStatusOptions.map((status) {
+                  return DropdownMenuItem<String>(
+                    value: status,
+                    child: Text(
+                      status,
+                      style: TextStyle(
+                        color: status == 'Processing'
+                            ? TColors.primaryColor
+                            : status == 'Shipping'
+                            ? Colors.yellow
+                            : status == 'Received'
+                            ? Colors.green
+                            : Colors
+                            .red, // Default color if no conditions match
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+              const SizedBox(height: TSizes.spaceBtwItems),
+              ///order date
+              // Order Date
+              TextFormField(
+                controller: orderDateController,
+                readOnly: true,
+                decoration: InputDecoration(
+                  labelText: 'Order Date',
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.calendar_today),
+                    onPressed: () async {
+                      final DateTime? picked = await showDatePicker(
+                        context: context,
+                        initialDate: order.orderDate,
+                        firstDate: DateTime(2015, 8),
+                        lastDate: DateTime(2101),
+                      );
+                      if (picked != null) {
+                        orderDateController.text = DateFormat('yyyy-MM-dd').format(picked);
+                        DateTime newOrderDate = DateFormat('yyyy-MM-dd').parse(orderDateController.text);
+                        orderController.updateOrderDates(user.id, newOrderDate, order.orderDate);
+                      }
+                    },
+                  ),
+                ),
+              ),              const SizedBox(height: TSizes.spaceBtwItems),
+              ///delivery date
+              TextFormField(
+                controller: deliveryDateController,
+                readOnly: true,
+                decoration: InputDecoration(
+                  labelText: 'Delivery Date',
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.calendar_today),
+                    onPressed: () async {
+                      final DateTime? picked = await showDatePicker(
+                        context: context,
+                        initialDate: order.deliveryDate,
+                        firstDate: DateTime(2015, 8),
+                        lastDate: DateTime(2101),
+                      );
+                      if (picked != null) {
+                        deliveryDateController.text = DateFormat('yyyy-MM-dd').format(picked);
+                        DateTime newOrderDate = DateFormat('yyyy-MM-dd').parse(deliveryDateController.text);
+                        orderController.updateDeliveryDates(user.id, newOrderDate, order.deliveryDate);
+                      }
+                    },
+                  ),
+                ),
+              ),
+              const SizedBox(height: TSizes.spaceBtwSections),
+             ///name client
+             Row(
+               children: [
+                 const Text(
+                   'Name Client: ',
+                 ),
+                 const SizedBox(width: TSizes.spaceBtwItems / 2,),
+                 GestureDetector(
+                   onTap: () => Get.to(( CustomerDetail(user: user,))),
+                   child: Text(user.fullName,style: const TextStyle(color: Colors.green),),
+                 )
+               ],
+             ),
+              const SizedBox(height: TSizes.spaceBtwItems),
+              ///payment
+              Text(
+                'Payment method: ${order.paymentMethod}',
+              ),
+              const SizedBox(height: TSizes.spaceBtwItems),
+              ///date of payment
+              if(order.status == OrderStatus.received)
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    'Payment Method: ',
-                    style: TextStyle(fontSize: 16),
+                    'Date of payment: ',
                   ),
-                  Text(
-                    order.paymentMethod,
-                    style: const TextStyle(fontSize: 16,color: Colors.blueAccent),
-                  ),
+                  const SizedBox(width: TSizes.spaceBtwItems / 2,),
+                  Text(order.searchDate.toString(), style: TextStyle(fontSize: 12),),
                 ],
               ),
-              const SizedBox(height: 16),
-              const Text(
-                'Shipping Address:',
-                style: TextStyle(fontSize: 16),
+              if(order.status == OrderStatus.received)
+                const SizedBox(height: TSizes.spaceBtwItems),
+              Text(
+                'Address: ${order.address.toString()}',
               ),
-              ListTile(
-                title: Text(order.address.toString(),style: const TextStyle(fontSize: 14, color: Colors.blueAccent),),
-              ),
-              const SizedBox(height: 16),
+
+              const SizedBox(height: TSizes.spaceBtwSections),
+
               const Text(
-                'Items:',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                'Items order:',
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -94,11 +202,8 @@ class OrderDetailAdmin extends StatelessWidget {
                   );
                 }).toList(),
               ),
-              const SizedBox(height: 8),
-              const Text(
-                'Order overview',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
+              const SizedBox(height: TSizes.spaceBtwSections),
+              const Divider(),
               const SizedBox(height: 8),
 
               ///Shipping Fee
@@ -154,44 +259,6 @@ class OrderDetailAdmin extends StatelessWidget {
             ],
           ),
         ),
-      ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(TSizes.defaultSpace),
-        child: order.orderStatusText == 'Processing'
-            ? ElevatedButton(
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: const Text('Submit Order'),
-                  content: const Text(
-                      'Are you sure you want to Submit this order?'),
-                  actions: <Widget>[
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text('No'),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        orderController.shippedOrder(order.userId, totalAmount);
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text('Yes'),
-                    ),
-                  ],
-                );
-              },
-            );
-          },
-          child: const Text('Submit Order'),)
-            : order.orderStatusText == 'Cancelled'
-            ? null
-            : order.orderStatusText == 'Shipped'
-            ? null
-            : null,
       ),
     );
   }

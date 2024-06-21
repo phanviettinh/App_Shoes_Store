@@ -40,25 +40,24 @@ class ShowProductAdmin extends StatelessWidget {
             TCircularIcon(icon: Iconsax.add,onPressed: () => Get.to(() =>  const AddProducts()))
           ]
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(TSizes.defaultSpace),
+      body:  Expanded(
           child: FutureBuilder(
-              future: futureMethod ?? controller.fetchProductByQuery(query),
-              builder: (context, snapshot) {
+                future: futureMethod ?? controller.fetchProductByQuery(query),
+                builder: (context, snapshot) {
 
-                const loader = TVerticalProductShimmer();
-                final widget = TCloudHelperFunctions.checkMultiRecordState(snapshot: snapshot,loader: loader);
+                  const loader = TVerticalProductShimmer();
+                  final widget = TCloudHelperFunctions.checkMultiRecordState(snapshot: snapshot,loader: loader);
 
-                if(widget != null) return widget;
+                  if(widget != null) return widget;
 
-                //product found
-                final products = snapshot.data!;
+                  //product found
+                  final products = snapshot.data!;
 
-                return  TSortableProductAdmin(products: products,);
-              }),
-        ),
-      ),
+                  return  TSortableProductAdmin(products: products,);
+                }),
+          ),
+
+
     );
   }
 }

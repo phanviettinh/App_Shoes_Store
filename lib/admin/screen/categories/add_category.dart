@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sports_shoe_store/features/shop/controllers/category_controller.dart';
 import 'package:sports_shoe_store/features/shop/models/category_model.dart';
+import 'package:sports_shoe_store/utils/constants/colors.dart';
 import 'package:sports_shoe_store/utils/constants/sizes.dart';
+import 'package:sports_shoe_store/utils/helpers/helper_funtions.dart';
 
 import '../../../common/widgets/appbar/appbar.dart';
 
@@ -14,6 +16,7 @@ class AddCategory extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(CategoryController());
+    final dark = THelperFunctions.isDarkMode(context);
 
     if (category != null) {
       controller.setCategoryData(category!);
@@ -34,22 +37,26 @@ class AddCategory extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () => controller.pickAndUploadImage(),
-                    child: AbsorbPointer(
-                      child: TextField(
-                        controller: controller.image,
-                        decoration:
-                            const InputDecoration(labelText: 'Image URL'),
-                      ),
+            Obx(() => Row(
+                  children: [
+                    const Text('Choose image Category: '),
+                    const SizedBox(
+                      width: TSizes.spaceBtwSections,
                     ),
-                  ),
-                ),
-              ],
-            ),
+                    GestureDetector(
+                      onTap: () => controller.pickAndUploadImage(),
+                      child: controller.imageUrl.value.isNotEmpty
+                          ? Image.network(controller.imageUrl.value,
+                              height: 100, width: 100)
+                          : Container(
+                              height: 100,
+                              width: 100,
+                              color: dark ? TColors.dark : TColors.white,
+                              child: const Icon(Icons.add),
+                            ),
+                    )
+                  ],
+                )),
             const SizedBox(
               height: TSizes.spaceBtwItems,
             ),
@@ -78,24 +85,20 @@ class AddCategory extends StatelessWidget {
                     ),
                   ],
                 )),
-            const SizedBox(height: 16),
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton(
-                onPressed: () async {
-                  final category = this.category;
-                  if (category != null) {
-                    await controller
-                        .updateCategoryData(category); // Hàm update sản phẩm
-                  } else {
-                    await controller.saveCategory(); // Hàm lưu sản phẩm mới
-                  }
-                },
-                child: const Text('Save'),
-              ),
-            )
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          final category = this.category;
+          if (category != null) {
+            await controller
+                .updateCategoryData(category); // Hàm update sản phẩm
+          } else {
+            await controller.saveCategory(); // Hàm lưu sản phẩm mới
+          }
+        },
+        child: const Icon(Icons.save),
       ),
     );
   }

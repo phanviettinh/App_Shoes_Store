@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sports_shoe_store/common/widgets/appbar/appbar.dart';
+import 'package:sports_shoe_store/common/widgets/custom_shapes/containers/rounded_container.dart';
 import 'package:sports_shoe_store/common/widgets/icon/circular_icon.dart';
 import 'package:sports_shoe_store/features/shop/controllers/all_product_controller.dart';
 import 'package:sports_shoe_store/features/shop/controllers/product/product_controller.dart';
@@ -19,7 +20,6 @@ class AddProducts extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(AllProductController());
-    final controller2 = Get.put(ProductController());
 
     final dark = THelperFunctions.isDarkMode(context);
 
@@ -41,6 +41,7 @@ class AddProducts extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            ///container1 - title.
             Container(
               decoration: BoxDecoration(
                 color: dark ? TColors.black : TColors.light,
@@ -87,7 +88,14 @@ class AddProducts extends StatelessWidget {
                     const SizedBox(
                       height: TSizes.spaceBtwItems,
                     ),
-
+                    TextField(
+                      controller: controller.stockController,
+                      decoration: const InputDecoration(labelText: 'Stock'),
+                      keyboardType: TextInputType.number,
+                    ),
+                    const SizedBox(
+                      height: TSizes.spaceBtwItems,
+                    ),
                     TextField(
                       controller: controller.descriptionController,
                       decoration:
@@ -96,30 +104,161 @@ class AddProducts extends StatelessWidget {
                     const SizedBox(
                       height: TSizes.spaceBtwItems,
                     ),
+                  ],
+                ),
+              ),
+            ),
 
-                    Row(
+            const SizedBox(
+              height: TSizes.spaceBtwItems,
+            ),
+
+            ///container2 - thumbnail - image.
+            Container(
+              decoration: BoxDecoration(
+                color: dark ? TColors.black : TColors.light,
+                borderRadius: BorderRadius.circular(22.0),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 8.0,
+                    offset: Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(TSizes.defaultSpace),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: () =>
-                                controller.pickAndUploadImageForThumbnail(),
-                            child: AbsorbPointer(
-                              child: TextField(
-                                controller: controller.thumbnailController,
-                                decoration: const InputDecoration(
-                                    labelText: 'Thumbnail URL'),
-                              ),
-                            ),
-                          ),
+                        ///thumbnail
+                        GestureDetector(
+                          onTap: () =>
+                              controller.pickAndUploadImageForThumbnail(),
+                          child: Obx(() => Column(
+                                children: [
+                                  controller.imageUrl.value.isNotEmpty
+                                      ? Image.network(controller.imageUrl.value,
+                                          height: 200, width: 200)
+                                      : Container(
+                                          height: 200,
+                                          width: 200,
+                                          color: dark
+                                              ? TColors.dark
+                                              : TColors.white,
+                                          child: const Icon(Icons.add),
+                                        ),
+                                ],
+                              )),
                         ),
+                        const SizedBox(
+                          height: TSizes.spaceBtwItems / 2,
+                        ),
+                        TextButton(
+                            onPressed: () =>
+                                controller.pickAndUploadImageForThumbnail(),
+                            child: const Text('Choose Thumbnail Image ')),
                       ],
                     ),
-                    const SizedBox(
-                      height: TSizes.spaceBtwItems,
-                    ),
+                    const Divider(),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Obx(() {
+                                  return SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Row(
+                                      children: List.generate(
+                                          controller.images.length, (index) {
+                                        final imageController =
+                                            controller.images[index];
+                                        return Padding(
+                                          padding: const EdgeInsets.all(4.0),
+                                          child: Stack(
+                                            children: [
+                                              Image.network(
+                                                imageController.text,
+                                                width: 100,
+                                                height: 100,
+                                                fit: BoxFit.cover,
+                                              ),
+                                              Positioned(
+                                                right: 0,
+                                                top: 0,
+                                                child: IconButton(
+                                                  icon: const Icon(
+                                                      Icons.remove_circle,
+                                                      color: Colors.red),
+                                                  onPressed: () {
+                                                    // Xóa ảnh khỏi danh sách
+                                                    controller.images
+                                                        .removeAt(index);
+                                                    controller.images.refresh();
+                                                  },
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      }),
+                                    ),
+                                  );
+                                }),
 
+                        const SizedBox(height: 16),
+                        TextButton(
+                            onPressed: () =>
+                                controller.pickAndUploadImagesForProduct(),
+                            child: const Text('Choose Product Image ')),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            const SizedBox(
+              height: TSizes.spaceBtwItems,
+            ),
+
+            ///isFeatured
+            Container(
+              decoration: BoxDecoration(
+                color: dark ? TColors.black : TColors.light,
+                borderRadius: BorderRadius.circular(22.0),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 8.0,
+                    offset: Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(TSizes.defaultSpace),
+                child: Column(
+                  children: [
+                    ///show ui
+                    Obx(() => Row(
+                          children: [
+                            const Text('Show UI User: '),
+                            const SizedBox(width: TSizes.spaceBtwSections),
+                            Switch(
+                              value: controller.isFeatured.value,
+                              onChanged: (value) =>
+                                  controller.isFeatured.value = value,
+                            ),
+                          ],
+                        )),
+                    const SizedBox(height: TSizes.spaceBtwItems),
+
+                    ///categories
                     TextField(
-                      controller: controller.categoryIdController,
+                      controller: controller.categoryNameController,
                       decoration: const InputDecoration(labelText: 'Category'),
                       onTap: () => controller.showCategoryPickerDialog(context),
                       readOnly: true,
@@ -131,7 +270,7 @@ class AddProducts extends StatelessWidget {
                     ///productType
                     Row(
                       children: [
-                        const Text('Type: '),
+                        const Text('Type product: '),
                         const SizedBox(
                           width: TSizes.spaceBtwSections,
                         ),
@@ -155,110 +294,12 @@ class AddProducts extends StatelessWidget {
                     const SizedBox(
                       height: TSizes.spaceBtwItems,
                     ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: TSizes.spaceBtwItems,
-            ),
 
-            ///image array
-            Container(
-              decoration: BoxDecoration(
-                color: dark ? TColors.black : TColors.light,
-                borderRadius: BorderRadius.circular(22.0),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 8.0,
-                    offset: Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(TSizes.defaultSpace),
-                child: Column(
-                  children: [
-                    Obx(() => Column(
-                          children: [
-                            ...List.generate(controller.images.length, (index) {
-                              return Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: TextField(
-                                          controller: controller.images[index],
-                                          decoration: InputDecoration(
-                                              labelText:
-                                                  'Product ${index + 1} URL'),
-                                          onTap: () => controller
-                                              .pickAndUploadImageForProduct(
-                                                  index),
-                                        ),
-                                      ),
-                                      IconButton(
-                                        icon: const Icon(Icons.remove),
-                                        onPressed: () =>
-                                            controller.removeImage(index),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: TSizes.spaceBtwItems),
-                                ],
-                              );
-                            }),
-                            SizedBox(
-                              width: double.infinity,
-                              child: OutlinedButton(
-                                onPressed: controller.addImage,
-                                child: const Text('Image products'),
-                              ),
-                            ),
-                          ],
-                        )),
-                    const SizedBox(height: TSizes.spaceBtwItems),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: TSizes.spaceBtwItems),
-
-            ///isFeatured
-            Container(
-              decoration: BoxDecoration(
-                color: dark ? TColors.black : TColors.light,
-                borderRadius: BorderRadius.circular(22.0),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 8.0,
-                    offset: Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(TSizes.defaultSpace),
-                child: Column(
-                  children: [
-                    Obx(() => Row(
-                          children: [
-                            const Text('Show UI User: '),
-                            const SizedBox(width: TSizes.spaceBtwSections),
-                            Switch(
-                              value: controller.isFeatured.value,
-                              onChanged: (value) =>
-                                  controller.isFeatured.value = value,
-                            ),
-                          ],
-                        )),
-                    const SizedBox(height: TSizes.spaceBtwItems),
+                    ///brand
                     TextField(
-                      controller: controller.brandImageController,
-                      decoration:
-                          const InputDecoration(labelText: 'Brand Image'),
-                      onTap: () => controller.showImagePickerDialog(context),
+                      controller: controller.brandNameController,
+                      decoration: const InputDecoration(labelText: 'Brand '),
+                      onTap: () => controller.showBrandPickerDialog(context),
                       readOnly: true,
                     ),
                     const SizedBox(height: TSizes.spaceBtwItems),
@@ -282,7 +323,7 @@ class AddProducts extends StatelessWidget {
                 ],
               ),
               child: Padding(
-                padding: const EdgeInsets.all(TSizes.defaultSpace),
+                padding: const EdgeInsets.all(16.0),
                 child: Column(
                   children: [
                     Obx(() => Column(
@@ -293,57 +334,54 @@ class AddProducts extends StatelessWidget {
                               children: [
                                 TextField(
                                   decoration: InputDecoration(
-                                      labelText: 'Attribute Name ${index + 1}'),
+                                      labelText: 'Color and Size ${index + 1}'),
+                                  controller: TextEditingController(
+                                      text: attribute.name),
                                   onChanged: (value) {
                                     attribute.name = value;
                                   },
                                 ),
-                                const SizedBox(height: TSizes.spaceBtwItems),
+                                const SizedBox(height: 8),
                                 Column(
-                                  children: [
-                                    ...List.generate(attribute.values!.length,
-                                        (valueIndex) {
-                                      final textController =
-                                          TextEditingController(
-                                              text: attribute
-                                                  .values?[valueIndex]);
-                                      return Row(
-                                        children: [
-                                          Expanded(
-                                            child: TextField(
-                                              controller: textController,
-                                              decoration: InputDecoration(
-                                                  labelText:
-                                                      'Values ${valueIndex + 1}'),
-                                              onChanged: (newValue) {
-                                                attribute.values?[valueIndex] =
-                                                    newValue;
-                                              },
-                                            ),
+                                  children: List.generate(
+                                      attribute.values!.length, (valueIndex) {
+                                    final textController =
+                                        TextEditingController(
+                                            text:
+                                                attribute.values?[valueIndex]);
+                                    return Row(
+                                      children: [
+                                        Expanded(
+                                          child: TextField(
+                                            controller: textController,
+                                            decoration: InputDecoration(
+                                                labelText:
+                                                    'Value ${valueIndex + 1}'),
+                                            onChanged: (newValue) {
+                                              attribute.values?[valueIndex] =
+                                                  newValue;
+                                              controller.attributes.refresh();
+                                            },
                                           ),
-                                          IconButton(
-                                            icon: const Icon(Icons.remove),
-                                            onPressed: () => controller
-                                                .removeValue(index, valueIndex),
-                                          ),
-                                        ],
-                                      );
-                                    }),
-                                    const SizedBox(
-                                        height: TSizes.spaceBtwItems),
-                                    SizedBox(
-                                      width: double.infinity,
-                                      child: OutlinedButton(
-                                        onPressed: () =>
-                                            controller.addValue(index),
-                                        child: const Text('Add values'),
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                        height: TSizes.spaceBtwItems),
-                                  ],
+                                        ),
+                                        IconButton(
+                                          icon: const Icon(Icons.remove),
+                                          onPressed: () => controller
+                                              .removeValue(index, valueIndex),
+                                        ),
+                                      ],
+                                    );
+                                  }),
                                 ),
-                                const SizedBox(height: TSizes.spaceBtwItems),
+                                const SizedBox(height: 8),
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: OutlinedButton(
+                                    onPressed: () => controller.addValue(index),
+                                    child: const Text('Add values'),
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
                                 SizedBox(
                                   width: double.infinity,
                                   child: OutlinedButton(
@@ -352,12 +390,12 @@ class AddProducts extends StatelessWidget {
                                     child: const Text('Remove'),
                                   ),
                                 ),
-                                const SizedBox(height: TSizes.spaceBtwItems),
+                                const SizedBox(height: 8),
                               ],
                             );
                           }),
                         )),
-                    const SizedBox(height: TSizes.spaceBtwItems),
+                    const SizedBox(height: 16),
                     SizedBox(
                       width: double.infinity,
                       child: OutlinedButton(
@@ -365,7 +403,6 @@ class AddProducts extends StatelessWidget {
                         child: const Text('Add attributes'),
                       ),
                     ),
-                    const SizedBox(height: TSizes.spaceBtwItems),
                   ],
                 ),
               ),
@@ -386,87 +423,128 @@ class AddProducts extends StatelessWidget {
                 ],
               ),
               child: Padding(
-                padding: const EdgeInsets.all(TSizes.defaultSpace),
+                padding: const EdgeInsets.all(16.0),
                 child: Column(
                   children: [
-                    Obx(() => Column(
-                          children: [
-                            ...List.generate(controller.variations.length,
-                                (index) {
-                              final variation = controller.variations[index];
-                              return Column(
-                                children: [
-                                  const SizedBox(height: TSizes.spaceBtwItems),
-                                  GestureDetector(
-                                    onTap: () => controller
-                                        .pickAndUploadImageForVariation(index),
-                                    child: AbsorbPointer(
-                                      child: TextField(
-                                        controller: TextEditingController(
-                                            text: variation.image),
-                                        decoration: InputDecoration(
-                                            labelText:
-                                                'Variation Image ${index + 1}'),
-                                      ),
+                    Obx(
+                      () => Column(
+                        children: [
+                          ...List.generate(controller.variations.length,
+                              (index) {
+                            final variation = controller.variations[index];
+                            return Column(
+                              children: [
+                                const SizedBox(height: 16.0),
+                                Column(
+                                  children: [
+                                    const Text('Product image'),
+                                    const SizedBox(
+                                        height: TSizes.spaceBtwItems / 2),
+                                    GestureDetector(
+                                      onTap: () => controller
+                                          .pickAndUploadImageForVariation(
+                                              index),
+                                      child: variation.image.isNotEmpty
+                                          ? Image.network(
+                                              variation.image,
+                                              height: 100,
+                                              fit: BoxFit.cover,
+                                            )
+                                          : Container(
+                                              height: 100,
+                                              width: 100,
+                                              color: dark
+                                                  ? TColors.dark
+                                                  : TColors.white,
+                                              child: const Icon(Icons.add),
+                                            ),
                                     ),
-                                  ),
-                                  const SizedBox(height: TSizes.spaceBtwItems),
-                                  TextField(
-                                    decoration: InputDecoration(
-                                        labelText:
-                                            'Variation Price ${index + 1}'),
-                                    keyboardType: TextInputType.number,
-                                    onChanged: (value) {
-                                      variation.price = double.parse(value);
-                                    },
-                                  ),
-                                  const SizedBox(height: TSizes.spaceBtwItems),
-                                  TextField(
-                                    decoration: InputDecoration(
-                                        labelText:
-                                            'Variation Sale Price ${index + 1}'),
-                                    keyboardType: TextInputType.number,
-                                    onChanged: (value) {
-                                      variation.salePrice = double.parse(value);
-                                    },
-                                  ),
-                                  const SizedBox(height: TSizes.spaceBtwItems),
-                                  const SizedBox(height: TSizes.spaceBtwItems),
-                                  TextField(
-                                    decoration: InputDecoration(
-                                        labelText: 'Color ${index + 1}'),
-                                    onChanged: (value) {
-                                      variation.attributeValues['Color'] =
-                                          value;
-                                    },
-                                  ),
-                                  const SizedBox(height: TSizes.spaceBtwItems),
-                                  TextField(
-                                    decoration: InputDecoration(
-                                        labelText: 'Size ${index + 1}'),
-                                    keyboardType: TextInputType.number,
-                                    onChanged: (value) {
-                                      variation.attributeValues['Size'] = value;
-                                    },
-                                  ),
-                                  IconButton(
-                                    icon: const Icon(Icons.remove),
-                                    onPressed: () =>
-                                        controller.removeVariation(index),
-                                  ),
-                                ],
-                              );
-                            }),
-                            SizedBox(
-                              width: double.infinity,
-                              child: OutlinedButton(
-                                onPressed: controller.addVariation,
-                                child: const Text('Add variations'),
-                              ),
+                                  ],
+                                ),
+                                const SizedBox(height: 16.0),
+                                TextField(
+                                  decoration: InputDecoration(
+                                      labelText:
+                                          'Variation Price ${index + 1}'),
+                                  keyboardType: TextInputType.number,
+                                  onChanged: (value) {
+                                    variation.price =
+                                        double.tryParse(value) ?? 0.0;
+                                    controller.variations[index] =
+                                        variation; // Cập nhật giá trị
+
+                                  },
+                                ),
+                                const SizedBox(height: 16.0),
+                                TextField(
+                                  decoration: InputDecoration(
+                                      labelText:
+                                          'Variation Sale Price ${index + 1}'),
+                                  keyboardType: TextInputType.number,
+                                  onChanged: (value) {
+                                    variation.salePrice =
+                                        double.tryParse(value) ?? 0.0;
+                                    controller.variations[index] =
+                                        variation; // Cập nhật giá trị
+
+                                  },
+                                ),
+                                const SizedBox(height: 16.0),
+                                TextField(
+                                  decoration: InputDecoration(
+                                      labelText:
+                                          'Variation Stock ${index + 1}'),
+                                  keyboardType: TextInputType.number,
+                                  onChanged: (value) {
+                                    variation.stock = int.tryParse(value) ?? 0;
+                                    controller.variations[index] =
+                                        variation; // Cập nhật giá trị
+
+                                  },
+
+                                ),
+                                const SizedBox(height: 16.0),
+                                TextField(
+                                  decoration: InputDecoration(
+                                      labelText: 'Color ${index + 1}'),
+                                  onChanged: (value) {
+                                    variation.attributeValues['Color'] = value;
+                                    controller.variations[index] =
+                                        variation; // Cập nhật giá trị
+
+                                  },
+
+                                ),
+                                const SizedBox(height: 16.0),
+                                TextField(
+                                  decoration: InputDecoration(
+                                      labelText: 'Size ${index + 1}'),
+                                  keyboardType: TextInputType.number,
+                                  onChanged: (value) {
+                                    variation.attributeValues['Size'] = value;
+
+                                  },
+
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.remove),
+                                  onPressed: () =>
+                                      controller.removeVariation(index),
+                                ),
+                              ],
+                            );
+                          }),
+                          SizedBox(
+                            width: double.infinity,
+                            child: OutlinedButton(
+                              onPressed: controller.addVariation,
+                              child: const Text('Add products'),
                             ),
-                          ],
-                        )),
-                    const SizedBox(height: TSizes.spaceBtwItems),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 16.0),
                   ],
                 ),
               ),
