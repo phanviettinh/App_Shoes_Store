@@ -13,6 +13,7 @@ import 'package:sports_shoe_store/utils/helpers/helper_funtions.dart';
 import 'package:date_picker_plus/date_picker_plus.dart';
 
 import 'proceed_detail.dart';
+import 'product_home_proceed.dart';
 
 class HomeProceeds extends StatelessWidget {
   const HomeProceeds({super.key});
@@ -65,7 +66,7 @@ class HomeProceeds extends StatelessWidget {
                         ),
                         const DropdownMenuItem(
                           value: 'all',
-                          child: Text('This week', style: const TextStyle(fontSize: 12)),
+                          child: Text('All', style: const TextStyle(fontSize: 12)),
                         ),
                         const DropdownMenuItem(
                           value: 'custom',
@@ -81,7 +82,6 @@ class HomeProceeds extends StatelessWidget {
                   const SizedBox(height: TSizes.spaceBtwItems),
 
 
-                  /// Hiển thị các picker date nếu chọn "Tùy chỉnh"
 
                   /// Hiển thị các picker date nếu chọn "Tùy chỉnh"
                   Obx(() {
@@ -237,55 +237,7 @@ class HomeProceeds extends StatelessWidget {
                   const SizedBox(height: TSizes.spaceBtwSections),
 
                   /// Các sản phẩm
-                   SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        GestureDetector(
-                          child: const Column(
-                            children: [
-                              Icon(Icons.import_contacts_sharp),
-                              SizedBox(height: TSizes.spaceBtwItems / 2),
-                              Text('Orders'),
-                            ],
-                          ),
-                          onTap: () => Get.to(() => const OrderAdmin()),
-                        ),
-                        const SizedBox(width: TSizes.spaceBtwSections),
-                        const Column(
-                          children: [
-                            Icon(Icons.import_contacts_sharp),
-                            SizedBox(height: TSizes.spaceBtwItems / 2),
-                            Text('Products'),
-                          ],
-                        ),
-                        const SizedBox(width: TSizes.spaceBtwSections),
-                        const Column(
-                          children: [
-                            Icon(Icons.import_contacts_sharp),
-                            SizedBox(height: TSizes.spaceBtwItems / 2),
-                            Text('Brands'),
-                          ],
-                        ),
-                        const SizedBox(width: TSizes.spaceBtwSections),
-                        const Column(
-                          children: [
-                            Icon(Icons.import_contacts_sharp),
-                            SizedBox(height: TSizes.spaceBtwItems / 2),
-                            Text('Banner'),
-                          ],
-                        ),
-                        const SizedBox(width: TSizes.spaceBtwSections),
-                        const Column(
-                          children: [
-                            Icon(Icons.import_contacts_sharp),
-                            SizedBox(height: TSizes.spaceBtwItems / 2),
-                            Text('Categories'),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
+                   const ProductHomeProceed(),
                 ],
               ),
             ),
@@ -395,3 +347,4 @@ class HomeProceeds extends StatelessWidget {
     );
   }
 }
+

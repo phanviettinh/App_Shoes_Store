@@ -34,7 +34,7 @@ class AuthenticationRepository extends GetxController {
   @override
   void onReady() {
     FlutterNativeSplash.remove();
-    screenRedirectAdmin();
+    screenRedirect();
   }
 ///function to determine the relevant
  void screenRedirect() async {

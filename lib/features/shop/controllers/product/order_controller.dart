@@ -50,6 +50,7 @@ class OrderController extends GetxController {
   Rx<DateTime?> endDate = Rx<DateTime?>(null);
   RxString selectedDateRange = 'all'.obs;
   var receivedOrders = <OrderModel>[].obs;
+  var totalProfitByDate = <DateTime, double>{}.obs;
 
 
   void updateDateRange() {
@@ -94,6 +95,20 @@ class OrderController extends GetxController {
   void calculateTotalProfit() {
     totalProfit.value = filteredOrders.fold(0.0, (sum, order) => sum + order.totalAmount);
     receivedOrdersCount.value = filteredOrders.length; // Đếm số đơn hàng trạng thái receipt
+  }
+
+  // Phương thức để tính tổng doanh thu theo ngày
+  void calculateTotalProfitByDate() {
+    totalProfitByDate.clear();
+
+    for (var order in filteredOrders) {
+      final orderDate = DateTime(order.searchDate!.year, order.searchDate!.month, order.searchDate!.day);
+      if (totalProfitByDate.containsKey(orderDate)) {
+        totalProfitByDate[orderDate] = totalProfitByDate[orderDate]! + order.totalAmount;
+      } else {
+        totalProfitByDate[orderDate] = order.totalAmount;
+      }
+    }
   }
 
   ///

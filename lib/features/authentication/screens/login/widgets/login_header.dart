@@ -20,40 +20,6 @@ class TLoginHeader extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-         Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            GestureDetector(
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: const Text('Admin Verification'),
-                      content: const Text('Are you an admin?'),
-                      actions: <Widget>[
-                        TextButton(
-                          child: const Text('No'),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                        TextButton(
-                          child: const Text('Yes'),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                            Get.offAll(() => const LoginAdminScreen());
-                          },
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
-              child: const Icon(Iconsax.user_cirlce_add, size: 30),
-            )
-          ],
-        ),
         Image(
           height: 150,
           image: AssetImage(
