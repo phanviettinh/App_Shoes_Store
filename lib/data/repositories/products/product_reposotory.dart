@@ -159,11 +159,11 @@ class ProductRepository extends GetxController {
       final querySnapshot = limit == -1
           ? await _db
               .collection('Products')
-              .where('Brand.Id', isEqualTo: brandId)
+              .where('Brand.Id', isEqualTo: brandId).where('IsFeatured', isEqualTo: true)
               .get()
           : await _db
               .collection('Products')
-              .where('Brand.Id', isEqualTo: brandId).limit(limit)
+              .where('Brand.Id', isEqualTo: brandId).limit(limit).where('IsFeatured', isEqualTo: true)
               .get();
       final products = querySnapshot.docs.map((e) => ProductModel.fromSnapshot(e)).toList();
       return products;
