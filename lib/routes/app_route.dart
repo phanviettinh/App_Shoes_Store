@@ -23,7 +23,7 @@ class AppRoutes {
     GetPage(name: TRoutes.settings, page: () => const SettingScreen()),
     GetPage(name: TRoutes.productReviews, page: () => const ProductReview()),
     GetPage(name: TRoutes.order, page: () => const OrderScreen()),
-    GetPage(name: TRoutes.checkout, page: () => const CheckoutScreen()),
+    GetPage(name: TRoutes.checkout, page: () =>  CheckoutScreen()),
     GetPage(name: TRoutes.userProfile, page: () => const ProfileScreen()),
     GetPage(name: TRoutes.userAddress, page: () => const AddressScreen()),
     GetPage(name: TRoutes.signup, page: () => const SignupScreen()),

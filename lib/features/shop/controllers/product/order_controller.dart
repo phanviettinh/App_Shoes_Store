@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:sports_shoe_store/admin/screen/home/home_admin.dart';
 import 'package:sports_shoe_store/common/widgets/loaders/loader.dart';
 import 'package:sports_shoe_store/common/widgets/succes_screen/succes_screen.dart';
 import 'package:sports_shoe_store/data/repositories/authentication/authentication_repository.dart';

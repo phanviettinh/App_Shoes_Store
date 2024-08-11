@@ -3,15 +3,15 @@ import 'package:iconsax/iconsax.dart';
 import 'package:sports_shoe_store/common/widgets/appbar/appbar.dart';
 import 'package:sports_shoe_store/features/personalization/controllers/address_controller.dart';
 import 'package:sports_shoe_store/utils/constants/sizes.dart';
+import 'package:sports_shoe_store/utils/helpers/helper_funtions.dart';
 import 'package:sports_shoe_store/utils/validators/validation.dart';
 
 class AddNewAddressScreen extends StatelessWidget {
   const AddNewAddressScreen({super.key});
-
   @override
   Widget build(BuildContext context) {
     final controller = AddressController.instance;
-
+    final dark = THelperFunctions.isDarkMode(context);
     return Scaffold(
       appBar: const TAppbar(
         showBackArrow: true,
@@ -54,18 +54,7 @@ class AddNewAddressScreen extends StatelessWidget {
                     const SizedBox(
                       width: TSizes.spaceBtwInoutFields,
                     ),
-                    Expanded(
-                      child: TextFormField(
-                          controller: controller.postalCode,
-                          validator: (value) => TValidator.validateEmptyText('Postal Code', value),
-                          decoration: const InputDecoration(
-                              prefixIcon: Icon(Iconsax.code),
-                              labelText: 'Postal Code')),
-                    )
                   ],
-                ),
-                const SizedBox(
-                  height: TSizes.spaceBtwInoutFields,
                 ),
                 Row(
                   children: [
@@ -99,7 +88,8 @@ class AddNewAddressScreen extends StatelessWidget {
                     decoration: const InputDecoration(
                         prefixIcon: Icon(Iconsax.global),
                         labelText: 'Country')),
-                const SizedBox(
+
+            const SizedBox(
                   height: TSizes.defaultSpace,
                 ),
                 SizedBox(

@@ -39,7 +39,8 @@ dependencies:
   shimmer: ^3.0.0
   image_picker: ^1.0.7
   file_picker: ^5.0.1
-
+  sprintf: ^7.0.0
+  crypto: ^3.0.3
   cached_network_image: ^3.3.1
   url_launcher: ^6.2.5
   connectivity_plus: ^5.0.1
@@ -50,6 +51,11 @@ dependencies:
   date_picker_plus: ^4.0.0
   printing: ^5.12.0
   pdf: ^3.10.8
+
+  #map
+  flutter_map: any
+  latlong2: ^0.9.1
+  custom_country_state_city: ^1.0.0
 
   # icons
   iconsax: ^0.0.8

@@ -5,8 +5,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:sports_shoe_store/admin/login/login_admin_screen.dart';
-import 'package:sports_shoe_store/admin/screen/home/home_admin.dart';
+
 import 'package:sports_shoe_store/data/repositories/users/user_repository.dart';
 import 'package:sports_shoe_store/features/authentication/screens/login/login.dart';
 import 'package:sports_shoe_store/features/authentication/screens/onboarding/onboarding.dart';
@@ -58,24 +57,7 @@ class AuthenticationRepository extends GetxController {
 
   }
 
-  ///function to determine the relevant
-  void screenRedirectAdmin() async {
-    final user = _auth.currentUser;
-    if(user != null){
 
-        await TLocalStorage.init(user.uid);
-
-        Get.offAll(() => const HomeScreenAdmin());
-
-    }else{
-      //local storage
-      deviceStorage.writeIfNull('IsFirstTime', true);
-      deviceStorage.read('IsFirstTime') != true
-          ? Get.offAll(() => const LoginScreen())
-          : Get.offAll(() => const OnBoardingScreen());
-    }
-
-  }
 
   /*--------------------------------- email & password sign-in--------------------------------------*/
 
@@ -204,24 +186,7 @@ class AuthenticationRepository extends GetxController {
     }
   }
 
-  ///[logout user] -valid for any authentication
-  Future<void> logoutAdmin() async {
-    try {
-      await GoogleSignIn().signOut();
-      await FirebaseAuth.instance.signOut();
-      Get.offAll(() => const LoginAdminScreen());
-    } on FirebaseAuthException catch (e) {
-      throw TFirebaseAuthException(e.code).message;
-    } on FirebaseException catch (e) {
-      throw TFirebaseException(e.code).message;
-    } on FormatException catch (_) {
-      throw const TFormatException();
-    } on PlatformException catch (e) {
-      throw TPlatformException(e.code).message;
-    } catch (e) {
-      throw 'Something went wrong. please try again';
-    }
-  }
+
 /*--------------------------------- email & password delete -------------------------------------*/
   ///[logout user] -valid for any authentication
   Future<void> reAuthenticateWithEmailAndPassword(String email, String password) async {

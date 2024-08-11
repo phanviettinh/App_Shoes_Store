@@ -70,14 +70,19 @@ class TImages {
   static const String userReview3 = "assets/images/reviews/userReview3.jpg";
 
   ///payment
+
+  static const String zaloPay = "assets/icons/payments/zalopay.webp";
+  static const String paymentDelivery = "assets/icons/payments/delivery.jpg";
+
+  static const String payStack = "assets/icons/payments/payStack.jpg";
+  static const String payTm = "assets/icons/payments/paytm.jpg";
+  static const String visa = "assets/icons/payments/visa.jpg";
   static const String applePay = "assets/icons/payments/apple.jpg";
   static const String creditCard = "assets/icons/payments/credit_card.jpg";
   static const String ggPay = "assets/icons/payments/gg.jpg";
   static const String masterCard = "assets/icons/payments/master_card.jpg";
   static const String payPal = "assets/icons/payments/paypal.jpg";
-  static const String payStack = "assets/icons/payments/payStack.jpg";
-  static const String payTm = "assets/icons/payments/paytm.jpg";
-  static const String visa = "assets/icons/payments/visa.jpg";
+
 
   static const String paymentSuccess = "assets/icons/payments/payment_success.png";
 

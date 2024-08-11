@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:sports_shoe_store/admin/login/login_admin_screen.dart';
 import 'package:sports_shoe_store/utils/constants/image_strings.dart';
 import 'package:sports_shoe_store/utils/constants/sizes.dart';
 import 'package:sports_shoe_store/utils/constants/text_strings.dart';

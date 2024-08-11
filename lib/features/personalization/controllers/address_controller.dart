@@ -20,7 +20,6 @@ class AddressController extends GetxController{
   final name = TextEditingController();
   final phoneNumber = TextEditingController();
   final street = TextEditingController();
-  final postalCode = TextEditingController();
   final city = TextEditingController();
   final state = TextEditingController();
   final country = TextEditingController();
@@ -97,7 +96,6 @@ class AddressController extends GetxController{
           street: street.text.trim(),
           city: city.text.trim(),
           state: state.text.trim(),
-          postalCode: postalCode.text.trim(),
           country: country.text.trim(),
           selectedAddress: true
       );
@@ -173,7 +171,6 @@ class AddressController extends GetxController{
     name.clear();
     phoneNumber.clear();
     street.clear();
-    postalCode.clear();
     city.clear();
     state.clear();
     country.clear();

@@ -1,8 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
+
 import 'package:get/get.dart';
-import 'package:sports_shoe_store/admin/screen/home/home_admin.dart';
-import 'package:sports_shoe_store/admin/screen/products/show_product_admin.dart';
+
 import 'package:sports_shoe_store/common/widgets/loaders/loader.dart';
 import 'package:sports_shoe_store/data/repositories/products/product_reposotory.dart';
 import 'package:sports_shoe_store/features/shop/controllers/all_product_controller.dart';

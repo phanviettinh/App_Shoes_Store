@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:sports_shoe_store/common/widgets/appbar/appbar.dart';
 import 'package:sports_shoe_store/common/widgets/custom_shapes/containers/rounded_container.dart';
@@ -17,18 +19,96 @@ import 'package:sports_shoe_store/utils/constants/sizes.dart';
 import 'package:sports_shoe_store/utils/helpers/helper_funtions.dart';
 import 'package:sports_shoe_store/utils/helpers/pricing_caculator.dart';
 
+import '../../../../data/repositories/payment/payment.dart';
+import '../../../../utils/payment/theme_data.dart';
+import '../../controllers/product/checkout_controller.dart';
 import 'widgets/billing_address_section.dart';
 import 'widgets/billing_payment_section.dart';
 
-class CheckoutScreen extends StatelessWidget {
+class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({super.key});
+
+  @override
+  State<CheckoutScreen> createState() => _CheckoutScreenState();
+}
+
+class _CheckoutScreenState extends State<CheckoutScreen> {
+  static const EventChannel eventChannel =
+  EventChannel('flutter.native/eventPayOrder');
+  static const MethodChannel platform =
+  MethodChannel('flutter.native/channelPayOrder');
+  String zpTransToken = "";
+  String payResult = "";
+  bool showResult = false;
+
+  final CheckoutController _checkoutController = Get.put(CheckoutController());
+
+
+  Future<void> _createOrderAndPay(String amount) async {
+    int parsedAmount = (double.parse(amount) * 22222).toInt(); // Update the amount conversion
+    if (parsedAmount < 1000 || parsedAmount > 100000000) {
+      setState(() {
+        zpTransToken = "Invalid Amount";
+      });
+      return;
+    }
+
+    // Hiển thị vòng quay loading
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+
+    // Tạo đơn hàng
+    var result = await createOrder(parsedAmount);
+    Navigator.pop(context); // Tắt vòng quay loading
+
+    if (result != null) {
+      zpTransToken = result.zptranstoken;
+      setState(() {
+        zpTransToken = result.zptranstoken;
+        showResult = true;
+      });
+
+      // Tiến hành thanh toán
+      String response = "";
+      try {
+        final String result =
+        await platform.invokeMethod('payOrder', {"zptoken": zpTransToken});
+        response = result;
+        print("payOrder Result: '$result'.");
+        if (response == "Payment Success") {
+          _processOrder(); // Call order processing method on successful payment
+        }
+      } on PlatformException catch (e) {
+        print("Failed to Invoke: '${e.message}'.");
+        response = "Thanh toán thất bại";
+      }
+      print(response);
+      setState(() {
+        payResult = response;
+      });
+    }
+  }
+
+  void _processOrder() {
+    final orderController = Get.put(OrderController());
+    final cartController = CartController.instance;
+    final subTotal = cartController.totalCartPrice.value;
+    final totalAmount = TPricingCalculator.calculateTotalPrice(subTotal, 'US');
+
+    orderController.processOrder(totalAmount);
+  }
 
   @override
   Widget build(BuildContext context) {
     final dark = THelperFunctions.isDarkMode(context);
     final cartController = CartController.instance;
     final subTotal = cartController.totalCartPrice.value;
-    final orderController = Get.put(OrderController());
     final totalAmount = TPricingCalculator.calculateTotalPrice(subTotal, 'US');
 
     return Scaffold(
@@ -97,11 +177,18 @@ class CheckoutScreen extends StatelessWidget {
         padding: const EdgeInsets.all(TSizes.defaultSpace),
         child: ElevatedButton(
           onPressed: subTotal > 0
-              ? () => orderController.processOrder(totalAmount)
-              : () => TLoaders.warningSnackBar(title: 'Empty Cart',message: 'Add items in the cart in order to proceed'),
-          child:  Text('Checkout \$$totalAmount'),
+              ? () {
+            if (_checkoutController.selectedPaymentMethod.value.name == 'ZaloPay') {
+              _createOrderAndPay(totalAmount.toString());
+            } else {
+              _processOrder();
+            }
+          }
+              : () => TLoaders.warningSnackBar(
+              title: 'Empty Cart',
+              message: 'Add items in the cart in order to proceed'),
+          child: Text('Checkout \$$totalAmount'),
         ),
       ),
     );
-  }
-}
+  }}

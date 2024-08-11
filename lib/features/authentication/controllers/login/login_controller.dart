@@ -73,43 +73,7 @@ class LoginController extends GetxController{
     }
   }
 
-  ///email and password signIn
-  Future<void> emailAndPasswordSignInAdmin() async {
-    try{
-      //start loading
-      TFullScreenLoader.openLoadingDialog('Logging you in ....', TImages.loading);
 
-      //check Internet connect
-      final isConnected = await NetworkManager.instance.isConnected();
-      if(!isConnected){
-        TFullScreenLoader.stopLoading();
-        return;
-      }
-
-      //form validation
-      if(!loginFormKey.currentState!.validate()){
-        TFullScreenLoader.stopLoading();
-        return;
-      }
-
-      //save date if remember me is selected
-      if(rememberMe.value){
-        localStorage.write('REMEMBER_ME_EMAIL', email.text.trim());
-        localStorage.write('REMEMBER_ME_PASSWORD', password.text.trim());
-      }
-
-      //login user using Email & password auth
-      final userCredentials = await AuthenticationRepository.instance.loginWithEmailAndPassword(email.text.trim(), password.text.trim());
-
-      //remove loader
-      TFullScreenLoader.stopLoading();
-
-      AuthenticationRepository.instance.screenRedirectAdmin();
-    }catch(e){
-      TFullScreenLoader.stopLoading();
-      TLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
-    }
-  }
   ///google sign in
   Future<void> googleSignIn() async {
     try{
