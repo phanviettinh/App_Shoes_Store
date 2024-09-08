@@ -23,7 +23,7 @@ class App extends StatelessWidget {
       darkTheme: TAppTheme.darkTheme,
       initialBinding: GeneralBinding(),
       getPages: AppRoutes.pages,
-      home: const Scaffold(backgroundColor: TColors.primaryColor,body: Center(child: CircularProgressIndicator(color: TColors.white,),),),
+      home: const Scaffold(backgroundColor: TColors.primaryColor,body: Center(child: CircularProgressIndicator(color: TColors.white))),
       debugShowCheckedModeBanner: false,
     );
   }

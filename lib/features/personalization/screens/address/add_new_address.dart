@@ -51,10 +51,12 @@ class AddNewAddressScreen extends StatelessWidget {
                               prefixIcon: Icon(Iconsax.building_31),
                               labelText: 'Street')),
                     ),
-                    const SizedBox(
-                      width: TSizes.spaceBtwInoutFields,
-                    ),
+
                   ],
+                ),
+
+                const SizedBox(
+                  height: TSizes.spaceBtwInoutFields,
                 ),
                 Row(
                   children: [
@@ -89,7 +91,7 @@ class AddNewAddressScreen extends StatelessWidget {
                         prefixIcon: Icon(Iconsax.global),
                         labelText: 'Country')),
 
-            const SizedBox(
+                const SizedBox(
                   height: TSizes.defaultSpace,
                 ),
                 SizedBox(

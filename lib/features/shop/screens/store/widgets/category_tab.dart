@@ -16,13 +16,13 @@ import 'package:sports_shoe_store/utils/helpers/cloud_helper_function.dart';
 
 class TCategoryTab extends StatelessWidget {
   const TCategoryTab({super.key, required this.category});
-  
+
   final CategoryModel category;
 
   @override
   Widget build(BuildContext context) {
     final controller = CategoryController.instance;
-    return  ListView(
+    return ListView(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       children: [
@@ -32,33 +32,44 @@ class TCategoryTab extends StatelessWidget {
             children: [
               ///brand
               CategoryBrands(category: category),
-              const SizedBox(height: TSizes.spaceBtwItems,),
+              const SizedBox(
+                height: TSizes.spaceBtwItems,
+              ),
 
               ///product
-              FutureBuilder(future: controller.getCategoryProducts(categoryId: category.id), builder: (context, snapshot){
+              FutureBuilder(
+                  future:
+                      controller.getCategoryProducts(categoryId: category.id),
+                  builder: (context, snapshot) {
+                    final response =
+                        TCloudHelperFunctions.checkMultiRecordState(
+                            snapshot: snapshot,
+                            loader: const TVerticalProductShimmer());
+                    if (response != null) return response;
 
-                final response = TCloudHelperFunctions.checkMultiRecordState(snapshot: snapshot, loader: const TVerticalProductShimmer());
-                if(response != null) return response;
+                    ///record data
+                    final products = snapshot.data!;
 
-                ///record data
-                final products = snapshot.data!;
-
-                return Column(
-                  children: [
-                    TSectionHeading(
-                      title: 'Your might like',
-                      onPressed: () => Get.to(AllProductScreen(
-                        title: category.name,
-                        futureMethod: controller.getCategoryProducts(categoryId: category.id, limit: -1),)),
-                    ),
-                    const SizedBox(height: TSizes.spaceBtwItems,),
-                    TGridLayout(
-                        itemCount: products.length,
-                        itemBuilder: (_,index) =>  TProductCartVertical(product: products[index])
-                    ),
-                  ],
-                );
-              }),
+                    return Column(
+                      children: [
+                        TSectionHeading(
+                          title: 'Your might like',
+                          onPressed: () => Get.to(AllProductScreen(
+                            title: category.name,
+                            futureMethod: controller.getCategoryProducts(
+                                categoryId: category.id, limit: -1),
+                          )),
+                        ),
+                        const SizedBox(
+                          height: TSizes.spaceBtwItems,
+                        ),
+                        TGridLayout(
+                            itemCount: products.length,
+                            itemBuilder: (_, index) =>
+                                TProductCartVertical(product: products[index])),
+                      ],
+                    );
+                  }),
             ],
           ),
         )
