@@ -18,6 +18,7 @@ import 'package:sports_shoe_store/utils/constants/image_strings.dart';
 import 'package:sports_shoe_store/utils/constants/sizes.dart';
 import 'package:sports_shoe_store/utils/helpers/helper_funtions.dart';
 
+import '../../../../main.dart';
 import 'product_price_text.dart';
 
 class TProductCartVertical extends StatelessWidget {
@@ -29,7 +30,7 @@ class TProductCartVertical extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = ProductController.instance;
     final salePercentage = controller.calculateSalePercentage(product.price, product.salePrice);
-    final dark = THelperFunctions.isDarkMode(context);
+    
     return GestureDetector(
       onTap: () => Get.to(() =>  ProductDetail(product: product,)),
       child: Container(

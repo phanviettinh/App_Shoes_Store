@@ -5,6 +5,8 @@ import 'package:sports_shoe_store/utils/constants/sizes.dart';
 import 'package:sports_shoe_store/utils/device/device_utility.dart';
 import 'package:sports_shoe_store/utils/helpers/helper_funtions.dart';
 
+import '../../../../main.dart';
+
 class TSearchContainer extends StatelessWidget {
   const TSearchContainer({
     super.key,
@@ -22,7 +24,7 @@ class TSearchContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dark = THelperFunctions.isDarkMode(context);
+    
     return Padding(
       padding: padding,
       child: Container(

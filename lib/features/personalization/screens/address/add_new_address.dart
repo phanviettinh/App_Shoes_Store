@@ -11,7 +11,7 @@ class AddNewAddressScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = AddressController.instance;
-    final dark = THelperFunctions.isDarkMode(context);
+    
     return Scaffold(
       appBar: const TAppbar(
         showBackArrow: true,

@@ -3,6 +3,8 @@ import 'package:shimmer/shimmer.dart';
 import 'package:sports_shoe_store/utils/constants/colors.dart';
 import 'package:sports_shoe_store/utils/helpers/helper_funtions.dart';
 
+import '../../../main.dart';
+
 class TShimmerEffect extends StatelessWidget {
   const TShimmerEffect(
       {super.key,
@@ -16,7 +18,7 @@ class TShimmerEffect extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dark = THelperFunctions.isDarkMode(context);
+    
     return Shimmer.fromColors(
       baseColor: dark ? Colors.grey[850]! : Colors.grey[300]!,
       highlightColor: dark ? Colors.grey[700]! : Colors.grey[100]!,

@@ -8,12 +8,14 @@ import 'package:sports_shoe_store/utils/constants/image_strings.dart';
 import 'package:sports_shoe_store/utils/constants/sizes.dart';
 import 'package:sports_shoe_store/utils/helpers/helper_funtions.dart';
 
+import '../../../../../main.dart';
+
 class TBillingPaymentSection extends StatelessWidget {
   const TBillingPaymentSection({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final dark = THelperFunctions.isDarkMode(context);
+    
     final controller = Get.put(CheckoutController()) ;
 
     return  Column(

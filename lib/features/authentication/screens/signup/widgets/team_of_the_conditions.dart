@@ -6,6 +6,8 @@ import 'package:sports_shoe_store/utils/constants/sizes.dart';
 import 'package:sports_shoe_store/utils/constants/text_strings.dart';
 import 'package:sports_shoe_store/utils/helpers/helper_funtions.dart';
 
+import '../../../../../main.dart';
+
 class TTermOfTheConditions extends StatelessWidget {
   const TTermOfTheConditions({
     super.key,
@@ -15,7 +17,7 @@ class TTermOfTheConditions extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = SignupController.instance;
 
-    final dark = THelperFunctions.isDarkMode(context);
+    
     return Row(
       children: [
         SizedBox(

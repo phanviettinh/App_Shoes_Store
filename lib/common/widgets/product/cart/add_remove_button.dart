@@ -5,6 +5,8 @@ import 'package:sports_shoe_store/utils/constants/colors.dart';
 import 'package:sports_shoe_store/utils/constants/sizes.dart';
 import 'package:sports_shoe_store/utils/helpers/helper_funtions.dart';
 
+import '../../../../main.dart';
+
 class TProductQuantityWithAddRemoveButton extends StatelessWidget {
   const TProductQuantityWithAddRemoveButton({
     super.key, required this.quantity, this.add, this.remove,
@@ -16,7 +18,7 @@ class TProductQuantityWithAddRemoveButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final dark = THelperFunctions.isDarkMode(context);
+    
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [

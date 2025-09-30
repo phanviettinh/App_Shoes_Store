@@ -20,6 +20,8 @@ import 'package:sports_shoe_store/utils/constants/sizes.dart';
 import 'package:sports_shoe_store/utils/helpers/helper_funtions.dart';
 import 'package:sports_shoe_store/utils/helpers/pricing_caculator.dart';
 
+import '../../../../main.dart';
+
 class OrderDetail extends StatelessWidget {
   const OrderDetail({Key? key, required this.order}) : super(key: key);
 
@@ -27,7 +29,7 @@ class OrderDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dark = THelperFunctions.isDarkMode(context);
+    
     final cartController = CartController.instance;
     final subTotal = cartController.totalCartPrice.value;
     final totalAmount = TPricingCalculator.calculateTotalPrice(subTotal, 'US');

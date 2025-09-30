@@ -4,6 +4,8 @@ import 'package:sports_shoe_store/utils/constants/colors.dart';
 import 'package:sports_shoe_store/utils/constants/sizes.dart';
 import 'package:sports_shoe_store/utils/helpers/helper_funtions.dart';
 
+import '../../../main.dart';
+
 class TVerticalImageText extends StatelessWidget {
   const TVerticalImageText({
     super.key,
@@ -23,7 +25,7 @@ class TVerticalImageText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dark = THelperFunctions.isDarkMode(context);
+    
     return GestureDetector(
       onTap: onTap,
       child: Padding(

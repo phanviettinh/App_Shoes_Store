@@ -3,6 +3,8 @@ import 'package:sports_shoe_store/utils/constants/colors.dart';
 import 'package:sports_shoe_store/utils/device/device_utility.dart';
 import 'package:sports_shoe_store/utils/helpers/helper_funtions.dart';
 
+import '../../../main.dart';
+
 class TTabBar extends StatelessWidget implements PreferredSizeWidget {
   const TTabBar({
     super.key, required this.tabs,
@@ -11,7 +13,7 @@ class TTabBar extends StatelessWidget implements PreferredSizeWidget {
   final List<Widget> tabs;
   @override
   Widget build(BuildContext context) {
-    final dark = THelperFunctions.isDarkMode(context);
+    
     return Material(
       color: dark ? TColors.black : TColors.white,
       child: SingleChildScrollView(

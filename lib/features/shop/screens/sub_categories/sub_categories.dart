@@ -14,6 +14,8 @@ import 'package:sports_shoe_store/utils/constants/sizes.dart';
 import 'package:sports_shoe_store/utils/helpers/cloud_helper_function.dart';
 import 'package:sports_shoe_store/utils/helpers/helper_funtions.dart';
 
+import '../../../../main.dart';
+
 class SubCategoriesScreen extends StatelessWidget {
   const SubCategoriesScreen({super.key, required this.category});
 
@@ -22,7 +24,7 @@ class SubCategoriesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = CategoryController.instance;
-    final dark = THelperFunctions.isDarkMode(context);
+    
     return Scaffold(
       appBar: TAppbar(
         title: Text(category.name,

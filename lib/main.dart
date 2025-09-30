@@ -4,18 +4,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:sports_shoe_store/data/repositories/authentication/authentication_repository.dart';
 import 'package:sports_shoe_store/data/repositories/products/product_reposotory.dart';
 import 'package:sports_shoe_store/features/shop/controllers/brand_controller.dart';
 import 'package:sports_shoe_store/features/shop/controllers/category_controller.dart';
 import 'package:sports_shoe_store/features/shop/controllers/product/cart_controller.dart';
 import 'package:sports_shoe_store/features/shop/controllers/product/product_controller.dart';
+import 'package:sports_shoe_store/utils/helpers/helper_funtions.dart';
 import 'app.dart';
 import 'firebase_options.dart';
 
+final dark = THelperFunctions.isDarkMode(Get.context!);
 Future<void> main() async {
  ///add widgets binding
   final WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+
+  ///ads
+  MobileAds.instance.initialize();
 
   ///GetX Local storage
   await GetStorage.init('');

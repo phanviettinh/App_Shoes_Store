@@ -5,6 +5,8 @@ import 'package:sports_shoe_store/utils/constants/colors.dart';
 import 'package:sports_shoe_store/utils/constants/sizes.dart';
 import 'package:sports_shoe_store/utils/helpers/helper_funtions.dart';
 
+import '../../../main.dart';
+
 class TCircularImage extends StatelessWidget {
   const TCircularImage({
     super.key,
@@ -26,7 +28,7 @@ class TCircularImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dark = THelperFunctions.isDarkMode(context);
+    
     return Container(
       width: width,
       height: height,

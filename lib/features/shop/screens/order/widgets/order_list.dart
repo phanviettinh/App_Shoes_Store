@@ -15,12 +15,14 @@ import 'package:sports_shoe_store/utils/constants/sizes.dart';
 import 'package:sports_shoe_store/utils/helpers/cloud_helper_function.dart';
 import 'package:sports_shoe_store/utils/helpers/helper_funtions.dart';
 
+import '../../../../../main.dart';
+
 class TOrderListItem extends StatelessWidget {
   const TOrderListItem({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final dark = THelperFunctions.isDarkMode(context);
+    
 
     final controller = Get.put(OrderController());
 

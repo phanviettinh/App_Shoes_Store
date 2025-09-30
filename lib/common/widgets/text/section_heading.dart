@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:sports_shoe_store/utils/constants/colors.dart';
 import 'package:sports_shoe_store/utils/helpers/helper_funtions.dart';
 
+import '../../../main.dart';
+
 class TSectionHeading extends StatelessWidget {
   const TSectionHeading({
     super.key,
@@ -17,7 +19,7 @@ class TSectionHeading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dark = THelperFunctions.isDarkMode(context);
+    
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [

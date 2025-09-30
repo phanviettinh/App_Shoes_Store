@@ -9,6 +9,7 @@ import 'package:sports_shoe_store/features/shop/screens/brands/brand_products.da
 import 'package:sports_shoe_store/utils/constants/colors.dart';
 import 'package:sports_shoe_store/utils/constants/sizes.dart';
 
+import '../../../main.dart';
 import '../../../utils/helpers/helper_funtions.dart';
 
 class TBrandShowcase extends StatelessWidget {
@@ -45,7 +46,7 @@ class TBrandShowcase extends StatelessWidget {
   }
 
   Widget brandTopProductImageWidget(String image, context) {
-    final dark = THelperFunctions.isDarkMode(context);
+    
     return Expanded(child: TRoundedContainer(
       height: 100,
       backgroundColor: dark ? TColors.darkerGrey : TColors.light,
