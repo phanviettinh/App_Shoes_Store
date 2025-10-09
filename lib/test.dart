@@ -3,7 +3,7 @@ import 'dart:io';
 void main() async {
   // Kết nối tới server WebSocket (ví dụ server echo test của Dart)
 
-  var socket = await WebSocket.connect('wss://echo.websocket.event');
+  var socket = await WebSocket.connect('wss://bsocket.event');
 
   // Lắng nghe tin nhắn (single-subscription stream)
   socket.listen((message) {
