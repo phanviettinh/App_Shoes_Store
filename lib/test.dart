@@ -5,6 +5,8 @@ void main() async {
 
   var socket = await WebSocket.connect('wss://echo.websocket.event');
   ///hello cả nhà
+  //////jello mọi người
+
 
   // Lắng nghe tin nhắn (single-subscription stream)
   socket.listen((message) {
