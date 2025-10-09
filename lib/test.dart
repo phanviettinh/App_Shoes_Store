@@ -7,7 +7,7 @@ void main() async {
 
   // Lắng nghe tin nhắn (single-subscription stream)
   socket.listen((message) {
-    print("Listener 1 nhận: $message");
+    // print("Listener 1 nhận: $message");
   });
 
   // Nếu thêm một listener nữa sẽ bị lỗi:
