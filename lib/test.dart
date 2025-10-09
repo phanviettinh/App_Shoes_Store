@@ -13,7 +13,7 @@ void main() async {
   // Nếu thêm một listener nữa sẽ bị lỗi:
   // Bad state: Stream has already been listened to.
   socket.listen((message) {
-    print("Listener 2 nhận: $message");
+    print("Listener 2 nhận: $message");??????
   });
 
   // Gửi tin nhắn
