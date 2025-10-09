@@ -6,9 +6,9 @@ void main() async {
   var socket = await WebSocket.connect('wss://echo.websocket.event');
 
   // Lắng nghe tin nhắn (single-subscription stream)
-  // socket.listen((message) {
-  //   print("Listener 1 nhận: $message");
-  // });
+  socket.listen((message) {
+    // print("Listener 1 nhận: $message");
+  });
 
   // Nếu thêm một listener nữa sẽ bị lỗi:
   // Bad state: Stream has already been listened to.
