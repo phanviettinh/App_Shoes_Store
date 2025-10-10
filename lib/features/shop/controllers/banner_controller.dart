@@ -3,12 +3,14 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:sports_shoe_store/common/widgets/loaders/loader.dart';
 import 'package:sports_shoe_store/data/repositories/banners/banner_repository.dart';
 import 'package:sports_shoe_store/features/shop/models/banner_model.dart';
 import 'package:sports_shoe_store/features/shop/models/brand_model.dart';
+import 'package:sports_shoe_store/utils/helpers/ads_helper.dart';
 
 class BannerController extends GetxController{
 
@@ -26,6 +28,7 @@ class BannerController extends GetxController{
   RxList<BannerModel> filteredBanners = <BannerModel>[].obs; // Added
   TextEditingController searchController = TextEditingController(); //
 
+
   final ImagePicker picker = ImagePicker();
   final FirebaseStorage storage = FirebaseStorage.instance;
 
@@ -40,6 +43,7 @@ class BannerController extends GetxController{
     listenToBanners();
 
   }
+
 
   ///update page navigational dots
   void updatePageIndicator(index){

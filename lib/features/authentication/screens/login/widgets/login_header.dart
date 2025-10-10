@@ -6,6 +6,8 @@ import 'package:sports_shoe_store/utils/constants/sizes.dart';
 import 'package:sports_shoe_store/utils/constants/text_strings.dart';
 import 'package:sports_shoe_store/utils/helpers/helper_funtions.dart';
 
+import '../../../../../main.dart';
+
 class TLoginHeader extends StatelessWidget {
   const TLoginHeader({
     super.key,
@@ -14,7 +16,7 @@ class TLoginHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dark = THelperFunctions.isDarkMode(context);
+    
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

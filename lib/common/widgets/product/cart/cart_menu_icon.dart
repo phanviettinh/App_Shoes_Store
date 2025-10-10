@@ -6,6 +6,8 @@ import 'package:sports_shoe_store/features/shop/screens/cart/cart_screen.dart';
 import 'package:sports_shoe_store/utils/constants/colors.dart';
 import 'package:sports_shoe_store/utils/helpers/helper_funtions.dart';
 
+import '../../../../main.dart';
+
 class TCartCounterIcon extends StatelessWidget {
   const TCartCounterIcon({
     super.key,
@@ -18,7 +20,7 @@ class TCartCounterIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dark = THelperFunctions.isDarkMode(context);
+    
     final controller = Get.put(CartController());
 
     return Stack(

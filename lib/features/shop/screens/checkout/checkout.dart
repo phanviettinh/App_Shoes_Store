@@ -20,6 +20,7 @@ import 'package:sports_shoe_store/utils/helpers/helper_funtions.dart';
 import 'package:sports_shoe_store/utils/helpers/pricing_caculator.dart';
 
 import '../../../../data/repositories/payment/payment.dart';
+import '../../../../main.dart';
 import '../../../../utils/payment/theme_data.dart';
 import '../../controllers/product/checkout_controller.dart';
 import 'widgets/billing_address_section.dart';
@@ -106,7 +107,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final dark = THelperFunctions.isDarkMode(context);
+    
     final cartController = CartController.instance;
     final subTotal = cartController.totalCartPrice.value;
     final totalAmount = TPricingCalculator.calculateTotalPrice(subTotal, 'US');

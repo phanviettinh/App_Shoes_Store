@@ -8,6 +8,7 @@ import 'package:sports_shoe_store/utils/constants/enums.dart';
 import 'package:sports_shoe_store/utils/constants/sizes.dart';
 import 'package:sports_shoe_store/utils/helpers/helper_funtions.dart';
 
+import '../../../main.dart';
 import '../../../utils/constants/image_strings.dart';
 
 class TBrandCard extends StatelessWidget {
@@ -20,7 +21,7 @@ class TBrandCard extends StatelessWidget {
   final void Function()? onTap;
   @override
   Widget build(BuildContext context) {
-    final dark = THelperFunctions.isDarkMode(context);
+    
     return GestureDetector(
       onTap: onTap,
       child: TRoundedContainer(

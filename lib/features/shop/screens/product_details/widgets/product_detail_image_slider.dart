@@ -14,6 +14,7 @@ import 'package:sports_shoe_store/utils/constants/sizes.dart';
 import 'package:sports_shoe_store/utils/helpers/helper_funtions.dart';
 
 import '../../../../../common/widgets/icon/circular_icon.dart';
+import '../../../../../main.dart';
 
 class TProductImageSlider extends StatelessWidget {
   const TProductImageSlider({
@@ -25,7 +26,7 @@ class TProductImageSlider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dark = THelperFunctions.isDarkMode(context);
+    
 
     final controller = Get.put(ImageController());
     final images = controller.getAllProductImages(product);

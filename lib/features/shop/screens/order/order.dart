@@ -4,6 +4,7 @@ import 'package:sports_shoe_store/utils/constants/colors.dart';
 import 'package:sports_shoe_store/utils/constants/sizes.dart';
 import 'package:sports_shoe_store/utils/helpers/helper_funtions.dart';
 
+import '../../../../main.dart';
 import 'widgets/order_list.dart';
 
 class OrderScreen extends StatelessWidget {
@@ -11,7 +12,7 @@ class OrderScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dark = THelperFunctions.isDarkMode(context);
+    
     return Scaffold(
       appBar: TAppbar(
         title: Text('My Orders',

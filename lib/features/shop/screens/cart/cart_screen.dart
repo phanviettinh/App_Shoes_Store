@@ -18,6 +18,7 @@ import 'package:sports_shoe_store/utils/constants/image_strings.dart';
 import 'package:sports_shoe_store/utils/constants/sizes.dart';
 import 'package:sports_shoe_store/utils/helpers/helper_funtions.dart';
 
+import '../../../../main.dart';
 import 'widgets/cart_item.dart';
 
 class CartScreen extends StatelessWidget {
@@ -25,7 +26,7 @@ class CartScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dark = THelperFunctions.isDarkMode(context);
+    
     final controller = CartController.instance;
 
     return Scaffold(

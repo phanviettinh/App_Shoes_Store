@@ -18,13 +18,15 @@ import 'package:sports_shoe_store/utils/constants/sizes.dart';
 import 'package:sports_shoe_store/utils/helpers/cloud_helper_function.dart';
 import 'package:sports_shoe_store/utils/helpers/helper_funtions.dart';
 
+import '../../../../main.dart';
+
 class WishList extends StatelessWidget {
   const WishList({super.key});
 
   @override
   Widget build(BuildContext context) {
     final controller = FavouritesController.instance;
-    final dark = THelperFunctions.isDarkMode(context);
+    
     return  Scaffold(
       backgroundColor: dark ? TColors.black : TColors.white,
       appBar: TAppbar(

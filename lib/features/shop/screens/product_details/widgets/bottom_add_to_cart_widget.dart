@@ -8,6 +8,8 @@ import 'package:sports_shoe_store/utils/constants/colors.dart';
 import 'package:sports_shoe_store/utils/constants/sizes.dart';
 import 'package:sports_shoe_store/utils/helpers/helper_funtions.dart';
 
+import '../../../../../main.dart';
+
 class TBottomAddToCart extends StatelessWidget {
   const TBottomAddToCart({super.key, required this.product});
 
@@ -16,7 +18,7 @@ class TBottomAddToCart extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = CartController.instance;
     controller.updateAlreadyAddedProductCount(product);
-    final dark = THelperFunctions.isDarkMode(context);
+    
 
     return Container(
       padding: const EdgeInsets.symmetric(

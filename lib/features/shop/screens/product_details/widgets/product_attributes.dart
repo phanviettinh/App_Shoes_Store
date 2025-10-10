@@ -11,6 +11,8 @@ import 'package:sports_shoe_store/utils/constants/colors.dart';
 import 'package:sports_shoe_store/utils/constants/sizes.dart';
 import 'package:sports_shoe_store/utils/helpers/helper_funtions.dart';
 
+import '../../../../../main.dart';
+
 class TProductAttribute extends StatelessWidget {
   const TProductAttribute({super.key, required this.product});
 
@@ -18,7 +20,7 @@ class TProductAttribute extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dark = THelperFunctions.isDarkMode(context);
+    
     final controller = Get.put(VariationController());
     return Obx(() => Column(
       children: [
